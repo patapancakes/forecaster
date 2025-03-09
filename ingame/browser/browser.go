@@ -81,7 +81,7 @@ func Browser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// handle login ticket
-	steamid, _ := SteamIDFromTicket(r.Header.Get("TICKET"))
+	steamid, _ := utils.SteamIDFromTicket(r.Header.Get("TICKET"))
 
 	// fill api request values
 	v := make(url.Values)

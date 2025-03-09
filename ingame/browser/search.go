@@ -31,7 +31,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		Type: r.URL.Query().Get("type"),
 	}
 
-	steamid, _ := SteamIDFromTicket(r.Header.Get("TICKET"))
+	steamid, _ := utils.SteamIDFromTicket(r.Header.Get("TICKET"))
 
 	if sd.Type == "home" {
 		var err error
