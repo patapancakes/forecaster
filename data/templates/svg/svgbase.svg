@@ -1,3 +1,0 @@
-{{if eq .Name "clouds"}}
-	{{template "clouds" .}}
-{{end}}

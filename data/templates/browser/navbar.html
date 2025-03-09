@@ -1,0 +1,16 @@
+{{define "navbar"}}<div id="toybox_navbar">
+	<div id="searcharea">
+		<input id="searchbox">
+	</div>
+	<ul>
+		{{if eq .Type "map"}}<li><a href="#"><img src="/client/navbar/favourites.png"><br>Favourites</a>
+		<li><a href="/maps?sort=popular"><img src="/client/navbar/star.png"><br>Popular</a>
+		<li><a href="/maps?sort=newest"><img src="/client/navbar/premium.png"><br>Newest</a>
+		{{else}}<li><a href="/mine"><img src="/client/navbar/mine.png"><br>Mine</a>
+		<li><a href="/favourites"><img src="/client/navbar/favourites.png"><br>Favourites</a>
+		<li><a href="/entities"><img src="/client/navbar/entities.png"><br>Entities</a>
+		<li><a href="/weapons"><img src="/client/navbar/weapons.png"><br>Weapons</a>
+		<li><a href="/props"><img src="/client/navbar/props.png"><br>Props</a>
+		<li><a href="/savemap?sort=popmap"><img src="/client/navbar/saves.png"><br>Saves</a>{{end}}
+	</ul>
+</div>{{end}}

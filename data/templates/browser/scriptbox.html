@@ -1,0 +1,25 @@
+{{define "scriptbox"}}<div class='script_box use_tooltip{{if eq .Type "map"}} {{.Name}}{{end}}' id='script_{{.ID}}'
+	title='<div style="width: 200px;">
+			{{if ne .Description ""}}<div class="inner">{{.Description}}</div>{{end}}
+			<div>
+				<div style="float: right;">by {{if eq .AuthorName ""}}Unknown{{else}}<a href="/user/!{{.Author}}">{{.AuthorName}}</a>{{end}}</div>
+				<img src="/client/icon_downloads.png"> {{.Downloads}} 
+			</div>
+	</div>'>
+	<div class='image_thumb' style='background-image: url("//img.cl0udb0x.com/{{.ID}}_thumb_128.png"), url("/client/no_thumb_128.png");'>
+		<img src='/client/overlay_128.png' width=128 height=100>
+	</div>
+	<div class='image_overlay' onmouseover='OnButtonHover(this);' onmouseout='OnButtonHoverEnd(this);'>
+		<div class='hover_overlay'>
+			<div class='ratings'>
+				<div class='rating'>{{.Goods}}<br/><a alt='Good' href='#' onclick="return DoRating(this, '{{.ID}}', 'good', '');"><img src='/client/ratings/good.png'/></a></div>
+				<div class='rating'>{{.Bads}}<br/><a alt='Bad' href='#' onclick="return DoRating(this, '{{.ID}}', 'bad', '');"><img src='/client/ratings/bad.png'/></a></div>
+			</div>
+			<div class='favourite'>{{.Favorites}}<br/><a href='#' onclick="return ToggleFavorite(this, '{{.ID}}', '');"><img src='/client/ratings/love.png'/></a></div>
+			<div class='comments'>{{.Favorites}}<br/><a href='/ingame?view={{.ID}}&tab=comments'><img src='/client/ratings/comments.png'/></a></div>
+		</div>
+		<a style='display: inline-block; width: 128px; height: 100px;' href='garrysmod://{{if eq .Type "map"}}install{{else}}spawn{{end}}/{{.Type}}/{{.ID}}/{{.Revision}}'{{if eq .Type "map"}} onclick='OnMapClicked("{{.Name}}");'{{end}}></a>
+	</div>
+	<div class='title'><a href='/ingame?view={{.ID}}'>{{.Name}}</a></div>
+	<div class='meta'></div>
+</div>{{end}}

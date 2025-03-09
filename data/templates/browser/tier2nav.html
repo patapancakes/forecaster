@@ -1,0 +1,10 @@
+{{define "tier2nav"}}<div class='tier2nav'>
+	<ul>
+		{{range $id, $name := .Categories}}<li{{if eq $id $.Category}} class='active'{{end}}><a href='?sort={{$.Sort}}&category={{$id}}'>{{$name}}</a>{{end}}
+		<li>|{{if and (eq .Type "savemap") (ne .Map "")}}
+		<li{{if eq .Sort "popmap"}} class='active'{{end}}><a href='?sort=popmap&category={{.Category}}'>Top '{{.Map}}'</a>
+		<li{{if eq .Sort "newmap"}} class='active'{{end}}><a href='?sort=newmap&category={{.Category}}'>Newest '{{.Map}}'</a>{{end}}
+		<li{{if eq .Sort "popular"}} class='active'{{end}}><a href='?sort=popular&category={{.Category}}'>{{if eq .Type "savemap"}}All {{end}}Popular</a>
+		<li{{if eq .Sort "newest"}} class='active'{{end}}><a href='?sort=newest&category={{.Category}}'>{{if eq .Type "savemap"}}All {{end}}Newest</a>
+	</ul>
+</div>{{end}}

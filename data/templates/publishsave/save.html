@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="/client/ingame.css" type="text/css" />
+		<link rel="stylesheet" href="/client/ingame_save.css" type="text/css" />
+	</head>
+	<body>
+		<div id="container">
+			<h2>Publish Saved Game</h2>
+			<form action="/API/publishsave_002/?id={{.ID}}&sid={{.SID}}" method="post">
+				<div class="row">
+					<label for="upload_name">Name:</label>
+					<input type="text" name="upload_name" id="upload_name" required>
+				</div>
+				<div class="row">
+					<label>Map:</label>
+					<input type="text" value="{{.Map}}" disabled>
+				</div>
+				<div class="row">
+					<label for="upload_desc">Description:</label>
+					<textarea name="upload_desc" id="upload_desc" required></textarea>
+				</div>
+				<div class="row">
+					<label>Category:</label>
+					<fieldset>
+						<label><input type="radio" name="upload_cat" value="1" checked> Uncategorized</label>
+						<label><input type="radio" name="upload_cat" value="2"> Fun</label>
+						<label><input type="radio" name="upload_cat" value="3"> Construction</label>
+						<label><input type="radio" name="upload_cat" value="4"> Scene</label>
+						<label><input type="radio" name="upload_cat" value="5"> Assault Course</label>
+						<label><input type="radio" name="upload_cat" value="6"> Gun Fight</label>
+					</fieldset>
+				</div>
+				<div class="row">
+					<label></label>
+					<button>Publish Saved Game</button>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>

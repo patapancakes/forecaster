@@ -1,0 +1,36 @@
+{{if ne .Type "home"}}<div class='files_box'><h2>Searched for <b>{{.Search}}</b></h2>
+	{{range .Packages}}
+		{{template "scriptbox" .}}
+	{{end}}
+</div>{{else}}<div class="column" style="float: left; width: 140px;">NEWEST ENTITIES<br>
+	<div class='files_box'>
+		{{range .Entities}}
+			{{template "scriptbox" .}}
+		{{end}}
+		<div class='clear'>&nbsp;</div>
+	</div>
+</div>
+<div class="column" style="float: left; width: 140px;">NEWEST WEAPONS<br>
+	<div class='files_box'>
+		{{range .Weapons}}
+			{{template "scriptbox" .}}
+		{{end}}
+		<div class='clear'>&nbsp;</div>
+	</div>
+</div>
+<div class="column" style="float: left; width: 140px;">NEWEST PROPS<br>
+	<div class='files_box'>
+		{{range .Props}}
+			{{template "scriptbox" .}}
+		{{end}}
+		<div class='clear'>&nbsp;</div>
+	</div>
+</div>
+<div class="column" style="float: left; width: 140px;">NEWEST SAVES<br>
+	<div class='files_box'>
+		{{range .Saves}}
+			{{template "scriptbox" .}}
+		{{end}}
+		<div class='clear'>&nbsp;</div>
+	</div>
+</div>{{end}}

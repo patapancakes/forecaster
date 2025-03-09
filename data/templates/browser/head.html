@@ -1,0 +1,21 @@
+{{define "head"}}<link rel="stylesheet" href="/client/ingame.css" type="text/css" />
+<link rel="stylesheet" href="/client/ingame_list.css" type="text/css" />
+<link rel="stylesheet" href="/client/ingame_view.css" type="text/css" />
+<link rel="stylesheet" href="/client/ingame_form.css" type="text/css" />
+<link rel="stylesheet" href="/client/tooltip.css" type="text/css" />
+<link rel="stylesheet" href="/client/ingame_comments.css" type="text/css" />
+<link rel="stylesheet" href="/client/jquery-ui-1.8.4.custom.css" type="text/css" />
+<script src="/client/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="/client/jquery-ui-1.8.4.custom.min.js" type="text/javascript"></script>	
+<script src="/client/tooltip.min.js" type="text/javascript"></script>
+<script src="/client/shared.js" type="text/javascript"></script>
+<script src="/client/ingame.js" type="text/javascript"></script>
+<script type="text/javascript">$(function() {
+	$(".use_tooltip").tooltip({position: 'bottom center', predelay: 500}).dynamic();
+	$(".use_tooltip_top").tooltip({position: 'top center', predelay: 500}).dynamic();
+	$("input").focus(StartSpawnmenuFocus);
+	$("input").blur(EndSpawnmenuFocus);
+	$("textarea").focus(StartSpawnmenuFocus);
+	$("textarea").blur(EndSpawnmenuFocus);
+});</script>
+<title>The Cloud</title>{{end}}

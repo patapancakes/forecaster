@@ -1,0 +1,89 @@
+form.niceform {
+	width: 550px;
+	text-align: left;
+	margin: 20px auto;
+}
+
+form.niceform label {
+	width: 90px;
+	display: inline-block;
+	text-align: right;
+	padding-right: 10px;
+	padding-top: 2px;
+	vertical-align: top;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+form.niceform input.text, form.niceform textarea, form.niceform div.radiobox ul li {
+	font-size: 11px;
+	font-family: Arial, Verdana;
+	color: #333;
+}
+
+form.niceform input.text, form.niceform textarea, form.niceform div.radiobox ul {
+	width: 400px;
+	background-color: #fafafa;
+	border: 1px solid #888;
+	padding: 3px;
+
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+form.niceform textarea {
+	height: 100px;
+	padding: 8px;
+}
+
+form.niceform input.text:focus, form.niceform textarea:focus {
+	background-color: #ffa;
+	border: 1px solid #fa0;
+}
+
+form.niceform div.radiobox ul {
+	display: inline-block;
+	width: auto;
+	padding: 8px;
+	margin: 0;
+}
+
+form.niceform div.radiobox ul li {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+form.niceform .submit {
+	margin-top: 20px;
+	text-align: center;
+	min-width: 100px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+div.forminner {
+	background-color: #fff;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	padding: 16px;
+	color: #333;
+	margin: 10px;
+}
+
+div.forminner p {
+	margin: 8px 32px;
+	font-size: 12px;
+}
+
+div.forminner .error {
+	text-align: center;
+	color: red;
+	font-weight: bolder;
+	margin: 10px;
+	background-color: yellow;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	padding: 10px;
+	border: 1px solid red;
+}

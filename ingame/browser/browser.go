@@ -23,144 +23,136 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/flatgrassdotnet/forecaster/common"
 	"github.com/flatgrassdotnet/forecaster/utils"
 )
 
-type Browser struct {
-	InGame     bool
-	GM13       bool
-	LoggedIn   bool
-	HomePage   bool
-	IsDarkMode bool
-	MapName    string
-	Search     string
+type BrowserData struct {
+	Map        string
+	Type       string
+	Category   int
+	Categories []string
 	Sort       string
-	Category   string
 	Packages   []common.Package
-	PrevLink   string
-	NextLink   string
+	PageNav
 }
 
 const itemsPerPage = 50
 
 var (
-	categories = map[string]string{
-		"mine":     "mine",
+	t         = template.Must(template.New("browser.html").ParseGlob("data/templates/browser/*.html"))
+	pagetypes = map[string]string{
+		"home": "home",
+
+		"mine":       "mine",
+		"favourites": "favorites",
+
 		"entities": "entity",
 		"weapons":  "weapon",
 		"props":    "prop",
-		"saves":    "savemap",
-		"maps":     "map",
+		"savemap":  "savemap",
+
+		"maps": "map",
 	}
-	t = template.Must(template.New("browser.html").Funcs(template.FuncMap{"StripHTTPS": func(url string) string { s, _ := strings.CutPrefix(url, "https:"); return s }}).ParseGlob("data/templates/browser/*.html"))
 )
 
-func Handle(w http.ResponseWriter, r *http.Request) {
-	category, ok := categories[r.PathValue("category")]
+func Browser(w http.ResponseWriter, r *http.Request) {
+	bd := BrowserData{
+		Map:  r.Header.Get("MAP"),
+		Sort: r.URL.Query().Get("sort"),
+	}
+
+	// get page type
+	var ok bool
+	bd.Type, ok = pagetypes[r.PathValue("type")]
 	if !ok {
-		http.Error(w, "unknown category", http.StatusNotFound)
-		return
+		bd.Type = "entity"
 	}
 
-	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
-	if page < 1 {
-		page = 1
+	// get page number
+	bd.Page, _ = strconv.Atoi(r.URL.Query().Get("page"))
+	if bd.Page < 1 {
+		bd.Page = 1
 	}
 
-	var steamid []byte
-	if r.Header.Get("TICKET") != "" {
-		v := make(url.Values)
-		v.Set("ticket", r.Header.Get("TICKET"))
+	// handle login ticket
+	steamid, _ := SteamIDFromTicket(r.Header.Get("TICKET"))
 
-		resp, err := http.Get(fmt.Sprintf("%s/auth/getid?%s", os.Getenv("API_URL"), v.Encode()))
-		if err != nil {
-			utils.WriteError(w, r, fmt.Sprintf("failed to get steamid: %s", err))
-			return
-		}
-
-		steamid, err = io.ReadAll(resp.Body)
-		if err != nil {
-			utils.WriteError(w, r, fmt.Sprintf("failed to read steamid: %s", err))
-			return
-		}
-	}
-
-	var darkmode bool
-	darkCookie, err := r.Cookie("darkmode")
-	if err == nil {
-		darkmode = darkCookie.Value == "true"
-	}
-
+	// fill api request values
 	v := make(url.Values)
-	v.Set("type", category)
-	v.Set("offset", strconv.Itoa((page-1)*itemsPerPage))
+	v.Set("type", bd.Type)
+	v.Set("offset", strconv.Itoa((bd.Page-1)*itemsPerPage))
 	v.Set("count", strconv.Itoa(itemsPerPage))
-	if category == "mine" {
+	if bd.Type == "mine" {
 		v.Del("type")
 		v.Set("author", string(steamid))
 	}
 
-	sort := r.URL.Query().Get("sort")
-	if sort == "" {
-		sort = "random"
+	switch r.URL.Query().Get("sort") {
+	case "popmap":
+		v.Set("dataname", bd.Map)
+		fallthrough
+	case "popular":
+		v.Set("sort", "popular")
+	case "newmap":
+		v.Set("dataname", bd.Map)
+		fallthrough
+	case "newest":
+		v.Set("sort", "newest")
+	default:
+		v.Set("sort", "random")
 	}
 
-	v.Set("sort", sort)
-
-	if r.URL.Query().Has("search") {
-		v.Set("search", r.URL.Query().Get("search"))
+	// set tier2nav categories
+	switch bd.Type {
+	case "prop":
+		bd.Categories = []string{"All", "Fun", "Building", "Other Games"}
+	case "savemap":
+		bd.Categories = []string{"All", "Fun", "Contraption", "Scene", "Assault Course", "Gun Fight"}
+	case "entity":
+		bd.Categories = []string{"All", "Fun", "Weapons", "Showcase", "Tools", "NPCs", "Vehicles"}
+	case "weapon":
+		bd.Categories = []string{"All", "Fun", "Violent", "Showcase", "Realistic", "Tools", "Other Games"}
+	case "map":
+		bd.Categories = []string{"Construct", "Roleplaying", "Eye Candy", "Puzzle", "Physics", "WIP", "Rats", "Contraption", "Gamemode"}
 	}
 
-	if r.Host == "safe.cl0udb0x.com" {
-		v.Set("safemode", "true")
+	// get tier2nav category
+	bd.Category, _ = strconv.Atoi(r.URL.Query().Get("category"))
+	if bd.Category < 0 {
+		bd.Category = 0
 	}
 
+	// make api request
 	resp, err := http.Get(fmt.Sprintf("%s/packages/list?%s", os.Getenv("API_URL"), v.Encode()))
 	if err != nil {
 		utils.WriteError(w, r, fmt.Sprintf("failed to get package list: %s", err))
 		return
 	}
 
-	var list []common.Package
-	err = json.NewDecoder(resp.Body).Decode(&list)
+	// decode api request
+	err = json.NewDecoder(resp.Body).Decode(&bd.Packages)
 	if err != nil {
 		utils.WriteError(w, r, fmt.Sprintf("failed to decode package list: %s", err))
 		return
 	}
 
-	prev := fmt.Sprintf("?page=%d", page-1)
-	if page <= 1 {
-		prev = "#"
+	// set prev page
+	bd.Prev = max(0, bd.Page-1)
+
+	// set next page
+	bd.Next = bd.Page + 1
+	if len(bd.Packages) < itemsPerPage {
+		bd.Next = 0
 	}
 
-	next := fmt.Sprintf("?page=%d", page+1)
-	if len(list) < itemsPerPage {
-		next = "#"
-	}
-
-	ingame := strings.Contains(r.UserAgent(), "Valve") || r.Host == "toybox.garrysmod.com" || r.Host == "ingame.cl0udb0x.com" || r.Host == "safe.cl0udb0x.com"
-
-	err = t.Execute(w, Browser{
-		InGame:     ingame,
-		GM13:       ingame && r.Host != "toybox.garrysmod.com",
-		LoggedIn:   steamid != nil,
-		IsDarkMode: darkmode,
-		MapName:    r.Header.Get("MAP"),
-		Search:     r.URL.Query().Get("search"),
-		Sort:       sort,
-		Category:   category,
-		Packages:   list,
-		PrevLink:   prev,
-		NextLink:   next,
-	})
+	// execute template
+	err = t.Execute(w, bd)
 	if err != nil {
 		utils.WriteError(w, r, fmt.Sprintf("failed to execute template: %s", err))
 		return

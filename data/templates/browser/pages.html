@@ -1,0 +1,12 @@
+{{define "pages"}}<div class='pages'>
+	{{if ne .Prev 0}}
+		<a class='page' href='?sort={{.Sort}}&page={{.Prev}}'>&lt;</a>
+		{{if gt .Page 2}}<a class='page' href='?sort={{.Sort}}'>1</a> ... {{end}}
+		<a class='page' href='?sort={{.Sort}}&page={{.Prev}}'>{{.Prev}}</a>
+	{{end}}
+	<a class='page active' href='#'>{{.Page}}</a>
+	{{if ne .Next 0}}
+		<a class='page' href='?sort={{.Sort}}&page={{.Next}}'>{{.Next}}</a>
+		<a class='page' href='?sort={{.Sort}}&page={{.Next}}'>&gt;</a>
+	{{end}}
+</div>{{end}}

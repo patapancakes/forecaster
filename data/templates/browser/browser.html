@@ -1,120 +1,27 @@
-<!doctype html>
-<html {{if .GM13}}class="gm13"{{end}}>
+<html>
 	<head>
-		<title>Cloudbox</title>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="theme-color" content="#4096ee">
-		<link rel="stylesheet" href="/assets/cloudbox.css?20250303" type="text/css">
-		<link id="darkmode" rel="stylesheet" href="/assets/cloudbox-dark.css?20250303" type="text/css" {{if not .IsDarkMode}}disabled{{end}}>
-		<script src="/assets/cloudbox.js?20250303" defer></script>
-		{{if not .GM13}}<script>var cloudbox = {}; cloudbox.GetPackage = function (type, id, rev) {window.location = "garrysmod://" + (type === "map" ? "install" : "spawn") + "/" + type + "/" + id + "/" + rev;}</script>{{end}}
-		<script>
-			var darkMode = {{.IsDarkMode}};
-			function toggleMode() {
-				darkMode = !darkMode;
-				document.cookie = "darkmode="+darkMode+"; Path=/";
-				if (darkMode) {
-					document.getElementById("darkmode").removeAttribute("disabled");
-				} else {
-					document.getElementById("darkmode").setAttribute("disabled","disabled");
-				}
-				{{if .GM13}}
-					cloudbox.ToggleDarkMode(darkMode);
-				{{end}}
-			}
-
-			{{if .GM13}} 
-				function forceMode(mode) {
-					darkMode = !mode;
-					toggleMode();
-				}
-				
-				cloudbox.ToggleDarkMode(darkMode);
-			{{end}}
-		</script>
+		{{template "head"}}
 	</head>
 	<body>
-		<div class="header" id="header_primary">
-			{{template "categorybar" .}}
-			<div class="header header_breakout">
-				{{template "searchbar" .}}
-				{{if not .HomePage}}
-					{{template "pagenav" .}}
-				{{end}}
-			</div>
-		</div>
-		<div class="header" id="header_secondary">
-			{{template "sortbar" .}}
-			{{if and (.InGame) (eq .Category "savemap")}}
-				{{template "savetools" .}}
-			{{end}}
-			<div class="subbar" style="margin-left:auto; margin-right: 52px;">
-				<a id="togglemode" onclick="toggleMode()" class="tt_left" tooltip="Toggle Light/Dark Mode"><span class="navicon"></span></a>
-				{{if .GM13}}
-					<a id="settings" onclick="cloudbox.OpenSettings()"><span class="navicon"></span><span translate="options">Options</span></a>
-				{{end}}
-			</div>
-		</div>
-		
-		<div class="clouds" id="topclouds"></div>
-		<div class="metabox" data-itemid="">
-			<div class="metabox-target"></div>
-		</div>
-		<div class="clouds" id="bottomclouds"></div>
-		<script>
-			function animationTimeString(time, total) {
-				return "-webkit-animation-delay: -" + (time.getSeconds() % total) + "." + (time.getMilliseconds()/1000).toFixed(3).substring(2) + "s;";
-			}
-			
-			var animationTime = new Date();
-			document.querySelector("#topclouds").setAttribute("style", animationTimeString(animationTime, 10));
-			document.querySelector("#bottomclouds").setAttribute("style", animationTimeString(animationTime, 5));
-		</script>
-		
-		{{if .HomePage}}
-			<div class="content" style="padding-top:0; {{if ne .PageType "home"}}padding-bottom: 16px;{{end}}">
-				{{if eq .PageType "home"}}
-					{{template "home" .}}
-				{{else if eq .PageType "news"}}
-					{{template "news" .}}
-				{{else if eq .PageType "info"}}
-					{{template "info" .}}
-				{{else if eq .PageType "search"}}
-					<div style="text-align: center;">
-						<h2 style="margin-top: 0; margin-bottom: 6px;">View <i>{{.Search}}</i> <span class="case"translate="search.results">results</span></h2>
-						<div class="pillbox" style="display: inline-block; width: auto; font-size: 20px;">
-							{{template "searchlinks" .}}
-						</div>
-					</div>
-				{{else if eq .PageType "zoo"}}
-					{{template "zoo" .}}
-				{{else if eq .PageType "error"}}
-					<div class="pillbox">
-						<h2>Page Not Found (404)</h2>
-						<p>URL does not exist <span style="font-size: 22px;">&#x1F641;</span></p>
-					</div>
-				{{end}}
-			</div>
-		{{else}}
-			<div class="content" style="text-align:center;">
-				{{if ne .Search ""}}{{template "searchresultsheading" .}}{{end}}
-				<div {{if ne .Search ""}}id="searchresults"{{end}}>{{range .Packages}}
-					{{if and ($.InGame) (eq $.Category "savemap") (ne $.MapName .Dataname)}}
-						{{continue}}
+		<div id="content">
+			{{template "navbar" .}}
+			<script type="text/javascript">$("#searchbox").keyup(function() {DoSearch($("#searchbox").val(), '{{.Type}}');});</script>
+			<div id='searchtarget'>
+				{{if not (or (eq .Type "map") (eq .Type "mine") (eq .Type "favorites"))}}{{template "tier2nav" .}}{{end}}
+				{{if ne .Type "map"}}{{template "pages" .}}{{end}}
+				{{/*{{if eq .Type "mine"}}<h2>In Your Workshop</h2><div class='clear'>&nbsp;</div></div><div class='clear'>&nbsp;</div></div><div><h2>Live</h2>{{end}}*/}}
+				{{if eq .Type "mine"}}<h2>Live</h2>{{end}}
+				{{if eq .Type "favorites"}}<h2>Favourites</h2>{{end}}
+				{{if eq .Type "savemap"}}{{template "explorer"}}{{end}}
+				<div class='files_box'>
+					{{range .Packages}}
+						{{template "scriptbox" .}}
 					{{end}}
-					{{template "item" .}}
-				{{end}}</div>
-				{{if ne .Search ""}}
-					{{if or (not .InGame) (ne .Category "map") (.GM13)}}
-						<div class="pillbox" style="display: inline-block; width: auto; margin-top: 12px; font-size: 14px; background-color: transparent;">
-							<h4>See search results in other categories</h4>
-							{{template "searchlinks" .}}
-						</div>
-					{{end}}
-				{{end}}
+					<div class='clear'>&nbsp;</div>
+				</div>
+				<div class='clear'>&nbsp;</div>
+				{{if ne .Type "map"}}{{template "pages" .}}{{end}}
 			</div>
-		{{end}}
-		<dialog id="alert"><h3></h3><p></p><button class="form_btn" onclick="cbalertClose();" autofocus><span translate="dialog.ok">OK</span></button></dialog>
+		</div>
 	</body>
 </html>
