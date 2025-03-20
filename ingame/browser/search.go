@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/flatgrassdotnet/forecaster/common"
+	"github.com/flatgrassdotnet/cloudbox/common"
 	"github.com/flatgrassdotnet/forecaster/utils"
 )
 

@@ -1,4 +1,4 @@
-{{define "scriptbox"}}<div class='script_box use_tooltip{{if eq .Type "map"}} {{.Name}}{{end}}' id='script_{{.ID}}'
+{{define "scriptbox"}}<div class='script_box use_tooltip{{if eq .Type "map"}} {{.RealMapName}}{{end}}' id='script_{{.ID}}'
 	title='<div style="width: 200px;">
 			{{if ne .Description ""}}<div class="inner">{{.Description}}</div>{{end}}
 			<div>
@@ -18,7 +18,7 @@
 			<div class='favourite'>{{.Favorites}}<br/><a href='#' onclick="return ToggleFavorite(this, '{{.ID}}', '');"><img src='/client/ratings/love.png'/></a></div>
 			<div class='comments'>{{.Favorites}}<br/><a href='/ingame?view={{.ID}}&tab=comments'><img src='/client/ratings/comments.png'/></a></div>
 		</div>
-		<a style='display: inline-block; width: 128px; height: 100px;' href='garrysmod://{{if eq .Type "map"}}install{{else}}spawn{{end}}/{{.Type}}/{{.ID}}/{{.Revision}}'{{if eq .Type "map"}} onclick='OnMapClicked("{{.Name}}");'{{end}}></a>
+		<a style='display: inline-block; width: 128px; height: 100px;' href='garrysmod://{{if eq .Type "map"}}install{{else}}spawn{{end}}/{{.Type}}/{{.ID}}/{{.Revision}}'{{if eq .Type "map"}} onclick='OnMapClicked("{{.RealMapName}}");'{{end}}></a>
 	</div>
 	<div class='title'><a href='/ingame?view={{.ID}}'>{{.Name}}</a></div>
 	<div class='meta'></div>

@@ -28,7 +28,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/flatgrassdotnet/forecaster/common"
+	"github.com/flatgrassdotnet/cloudbox/common"
 	"github.com/flatgrassdotnet/forecaster/utils"
 )
 

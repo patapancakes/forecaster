@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/flatgrassdotnet/forecaster/common"
+	"github.com/flatgrassdotnet/cloudbox/common"
 )
 
 type PageNav struct {
