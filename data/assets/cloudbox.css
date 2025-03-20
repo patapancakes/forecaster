@@ -137,9 +137,6 @@ dialog button.form_btn {font-size: 14px; float: right; padding: 6px 12px;}
 
 
 
-.savetools {padding: 16px 8px;}
-.savetools a {margin: 8px; font-weight: bolder;}
-
 .content {padding: 16px 8px; overflow-y: auto; background-color: #B8E3FF; -webkit-box-flex: 1; padding-bottom: 160px; scrollbar-color: #4096EE white;}
 
 .pillbox {background: white; -webkit-border-radius: 10px; border-radius: 10px; padding: 5px 10px; overflow: hidden; margin-left: auto; margin-right: auto; width: 92%; box-sizing: border-box;}

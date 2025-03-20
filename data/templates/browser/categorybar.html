@@ -1,17 +1,10 @@
 {{define "categorybar"}}
 <div class="navbar">
-	{{if or (not .InGame) (ne .Category "map") (.GM13)}}
-		<a href="/home" id="home"{{if .HomePage}} class="active"{{end}}><div class="navicon"></div><br>Cloudbox</a>
-		{{if and (.InGame) (not .GM13)}}
-			<a href="/browse/mine" id="mine"{{if not .LoggedIn}} class="disabled"{{end}}{{if eq .Category "mine"}} class="active"{{end}}><div class="navicon"></div><br>Mine<br></a>
-		{{end}}
-		<a href="/browse/entities" id="entity"{{if eq .Category "entity"}} class="active"{{end}}><div class="navicon"></div><br><span translate="addons.entity">Entities</span></a>
-		<a href="/browse/weapons" id="weapon"{{if eq .Category "weapon"}} class="active"{{end}}><div class="navicon"></div><br><span translate="addons.weapon">Weapons</span></a>
-		<a href="/browse/props" id="prop"{{if and (.InGame) (.GM13)}} class="disabled"{{end}}{{if eq .Category "prop"}} class="active"{{end}}><div class="navicon"></div><br><span class="Case" translate="props">Props</span></a>
-		<a href="/browse/saves" id="savemap"{{if and (.InGame) (.GM13)}} class="disabled"{{end}}{{if eq .Category "savemap"}} class="active"{{end}}><div class="navicon"></div><br><span translate="saves">Saves</span></a>
-		{{if or (not .InGame) (.GM13)}}
-			<a href="/browse/maps" id="map"{{if eq .Category "map"}} class="active"{{end}}><div class="navicon"></div><br><span translate="addons.map">Maps</span></a>
-		{{end}}
-	{{end}}
+	<a href="/home" id="home"{{if .HomePage}} class="active"{{end}}><div class="navicon"></div><br>Cloudbox</a>
+	<a href="/browse/entities" id="entity"{{if eq .Category "entity"}} class="active"{{end}}><div class="navicon"></div><br><span translate="addons.entity">Entities</span></a>
+	<a href="/browse/weapons" id="weapon"{{if eq .Category "weapon"}} class="active"{{end}}><div class="navicon"></div><br><span translate="addons.weapon">Weapons</span></a>
+	<a href="/browse/props" id="prop"{{if .InGame}} class="disabled"{{end}}{{if eq .Category "prop"}} class="active"{{end}}><div class="navicon"></div><br><span class="Case" translate="props">Props</span></a>
+	<a href="/browse/saves" id="savemap"{{if .InGame}} class="disabled"{{end}}{{if eq .Category "savemap"}} class="active"{{end}}><div class="navicon"></div><br><span translate="saves">Saves</span></a>
+	<a href="/browse/maps" id="map"{{if eq .Category "map"}} class="active"{{end}}><div class="navicon"></div><br><span translate="addons.map">Maps</span></a>
 </div>
 {{end}}

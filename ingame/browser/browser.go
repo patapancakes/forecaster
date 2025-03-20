@@ -23,7 +23,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -36,11 +35,8 @@ import (
 
 type Browser struct {
 	InGame     bool
-	GM13       bool
-	LoggedIn   bool
 	HomePage   bool
 	IsDarkMode bool
-	MapName    string
 	Search     string
 	Sort       string
 	Category   string
@@ -75,24 +71,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		page = 1
 	}
 
-	var steamid []byte
-	if r.Header.Get("TICKET") != "" {
-		v := make(url.Values)
-		v.Set("ticket", r.Header.Get("TICKET"))
-
-		resp, err := http.Get(fmt.Sprintf("%s/auth/getid?%s", os.Getenv("API_URL"), v.Encode()))
-		if err != nil {
-			utils.WriteError(w, r, fmt.Sprintf("failed to get steamid: %s", err))
-			return
-		}
-
-		steamid, err = io.ReadAll(resp.Body)
-		if err != nil {
-			utils.WriteError(w, r, fmt.Sprintf("failed to read steamid: %s", err))
-			return
-		}
-	}
-
 	var darkmode bool
 	darkCookie, err := r.Cookie("darkmode")
 	if err == nil {
@@ -103,10 +81,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	v.Set("type", category)
 	v.Set("offset", strconv.Itoa((page-1)*itemsPerPage))
 	v.Set("count", strconv.Itoa(itemsPerPage))
-	if category == "mine" {
-		v.Del("type")
-		v.Set("author", string(steamid))
-	}
 
 	sort := r.URL.Query().Get("sort")
 	if sort == "" {
@@ -150,10 +124,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	err = t.Execute(w, Browser{
 		InGame:     ingame,
-		GM13:       ingame && r.Host != "toybox.garrysmod.com",
-		LoggedIn:   steamid != nil,
 		IsDarkMode: darkmode,
-		MapName:    r.Header.Get("MAP"),
 		Search:     r.URL.Query().Get("search"),
 		Sort:       sort,
 		Category:   category,

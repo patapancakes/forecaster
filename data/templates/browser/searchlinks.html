@@ -1,10 +1,5 @@
 {{define "searchlinks"}}
 <a class="textlink" href="/browse/entities?sort=popular&search={{.Search}}"><span class="linkicon" style="background-image: url('/assets/rustmb/combined/entity.png');"></span><span translate="addons.entity">Entities</span></a>
 <a class="textlink" href="/browse/weapons?sort=popular&search={{.Search}}"><span class="linkicon" style="background-image: url('/assets/rustmb/combined/weapon.png');"></span><span translate="addons.weapon">Weapons</span></a>
-{{if not .GM13}}
-	<a class="textlink" href="/browse/saves?sort=popular&search={{.Search}}"><span class="linkicon" style="background-image: url('/assets/rustmb/combined/savemap.png');"></span>Saves</a>
-{{end}}
-{{if or (not .InGame) (.GM13)}}
-	<a class="textlink" href="/browse/maps?sort=popular&search={{.Search}}"><span class="linkicon" style="background-image: url('/assets/rustmb/combined/map.png');"></span><span translate="addons.map">Maps</span></a>
-{{end}}
+<a class="textlink" href="/browse/maps?sort=popular&search={{.Search}}"><span class="linkicon" style="background-image: url('/assets/rustmb/combined/map.png');"></span><span translate="addons.map">Maps</span></a>
 {{end}}

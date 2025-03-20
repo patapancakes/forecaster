@@ -1,5 +1,5 @@
 <!doctype html>
-<html {{if .GM13}}class="gm13"{{end}}>
+<html {{if .InGame}}class="gm13"{{end}}>
 	<head>
 		<title>Cloudbox</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,7 +8,6 @@
 		<link rel="stylesheet" href="/assets/cloudbox.css?20250303" type="text/css">
 		<link id="darkmode" rel="stylesheet" href="/assets/cloudbox-dark.css?20250303" type="text/css" {{if not .IsDarkMode}}disabled{{end}}>
 		<script src="/assets/cloudbox.js?20250303" defer></script>
-		{{if not .GM13}}<script>var cloudbox = {}; cloudbox.GetPackage = function (type, id, rev) {window.location = "garrysmod://" + (type === "map" ? "install" : "spawn") + "/" + type + "/" + id + "/" + rev;}</script>{{end}}
 		<script>
 			var darkMode = {{.IsDarkMode}};
 			function toggleMode() {
@@ -19,12 +18,12 @@
 				} else {
 					document.getElementById("darkmode").setAttribute("disabled","disabled");
 				}
-				{{if .GM13}}
+				{{if .InGame}}
 					cloudbox.ToggleDarkMode(darkMode);
 				{{end}}
 			}
 
-			{{if .GM13}} 
+			{{if .InGame}} 
 				function forceMode(mode) {
 					darkMode = !mode;
 					toggleMode();
@@ -46,12 +45,9 @@
 		</div>
 		<div class="header" id="header_secondary">
 			{{template "sortbar" .}}
-			{{if and (.InGame) (eq .Category "savemap")}}
-				{{template "savetools" .}}
-			{{end}}
 			<div class="subbar" style="margin-left:auto; margin-right: 52px;">
 				<a id="togglemode" onclick="toggleMode()" class="tt_left" tooltip="Toggle Light/Dark Mode"><span class="navicon"></span></a>
-				{{if .GM13}}
+				{{if .InGame}}
 					<a id="settings" onclick="cloudbox.OpenSettings()"><span class="navicon"></span><span translate="options">Options</span></a>
 				{{end}}
 			</div>
@@ -100,18 +96,13 @@
 			<div class="content" style="text-align:center;">
 				{{if ne .Search ""}}{{template "searchresultsheading" .}}{{end}}
 				<div {{if ne .Search ""}}id="searchresults"{{end}}>{{range .Packages}}
-					{{if and ($.InGame) (eq $.Category "savemap") (ne $.MapName .Dataname)}}
-						{{continue}}
-					{{end}}
 					{{template "item" .}}
 				{{end}}</div>
 				{{if ne .Search ""}}
-					{{if or (not .InGame) (ne .Category "map") (.GM13)}}
-						<div class="pillbox" style="display: inline-block; width: auto; margin-top: 12px; font-size: 14px; background-color: transparent;">
-							<h4>See search results in other categories</h4>
-							{{template "searchlinks" .}}
-						</div>
-					{{end}}
+					<div class="pillbox" style="display: inline-block; width: auto; margin-top: 12px; font-size: 14px; background-color: transparent;">
+						<h4>See search results in other categories</h4>
+						{{template "searchlinks" .}}
+					</div>
 				{{end}}
 			</div>
 		{{end}}

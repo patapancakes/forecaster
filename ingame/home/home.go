@@ -23,7 +23,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -36,12 +35,9 @@ import (
 
 type Home struct {
 	InGame       bool
-	GM13         bool
-	LoggedIn     bool
 	HomePage     bool
 	PageType     string
 	IsDarkMode   bool
-	MapName      string
 	Search       string
 	Sort         string
 	Category     string
@@ -73,24 +69,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		http.Redirect(w, r, "/error", http.StatusSeeOther)
 		return
-	}
-
-	var steamid []byte
-	if r.Header.Get("TICKET") != "" {
-		v := make(url.Values)
-		v.Set("ticket", r.Header.Get("TICKET"))
-
-		resp, err := http.Get(fmt.Sprintf("%s/auth/getid?%s", os.Getenv("API_URL"), v.Encode()))
-		if err != nil {
-			utils.WriteError(w, r, fmt.Sprintf("failed to get steamid: %s", err))
-			return
-		}
-
-		steamid, err = io.ReadAll(resp.Body)
-		if err != nil {
-			utils.WriteError(w, r, fmt.Sprintf("failed to read steamid: %s", err))
-			return
-		}
 	}
 
 	var darkmode bool
@@ -172,8 +150,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	err = t.Execute(w, Home{
 		InGame:       ingame,
-		GM13:         ingame && r.Host != "toybox.garrysmod.com",
-		LoggedIn:     steamid != nil,
 		HomePage:     true,
 		PageType:     pagetype,
 		IsDarkMode:   darkmode,

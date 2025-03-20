@@ -3,11 +3,7 @@
 	<form {{if .HomePage}}action="/search"{{end}}>
 		<input id="searchbox" class="form_input" type="text" name="search" placeholder="Search {{if eq .Category "entity"}}Entities{{else if eq .Category "weapon"}}Weapons{{else if eq .Category "prop"}}Props{{else if eq .Category "savemap"}}Saves{{else if eq .Category "map"}}Maps{{end}}" value="{{.Search}}"
 		{{if .InGame}}
-			{{if .GM13}}
-				onclick="cloudbox.SetFocused(true)" onblur="cloudbox.SetFocused(false)"
-			{{else}}
-				onclick="window.location='gmod\://startspawnmenufocus/'" onblur="window.location='gmod\://endspawnmenufocus/'"
-			{{end}}
+			onclick="cloudbox.SetFocused(true)" onblur="cloudbox.SetFocused(false)"
 		{{end}}>
 		<button></button>
 		<input type="hidden" name="sort" value="popular">
