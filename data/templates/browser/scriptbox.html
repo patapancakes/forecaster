@@ -16,10 +16,10 @@
 				<div class='rating'>{{.Bads}}<br/><a alt='Bad' href='#' onclick="return DoRating(this, '{{.ID}}', 'bad', '');"><img src='/client/ratings/bad.png'/></a></div>
 			</div>
 			<div class='favourite'>{{.Favorites}}<br/><a href='#' onclick="return ToggleFavorite(this, '{{.ID}}', '');"><img src='/client/ratings/love.png'/></a></div>
-			<div class='comments'>{{.Favorites}}<br/><a href='/ingame?view={{.ID}}&tab=comments'><img src='/client/ratings/comments.png'/></a></div>
+			<div class='comments'>{{.Favorites}}<br/><a href='/view/{{.ID}}/comments'><img src='/client/ratings/comments.png'/></a></div>
 		</div>
 		<a style='display: inline-block; width: 128px; height: 100px;' href='garrysmod://{{if eq .Type "map"}}install{{else}}spawn{{end}}/{{.Type}}/{{.ID}}/{{.Revision}}'{{if eq .Type "map"}} onclick='OnMapClicked("{{.RealMapName}}");'{{end}}></a>
 	</div>
-	<div class='title'><a href='/ingame?view={{.ID}}'>{{.Name}}</a></div>
+	<div class='title'><a href='/view/{{.ID}}'>{{.Name}}</a></div>
 	<div class='meta'></div>
 </div>{{end}}

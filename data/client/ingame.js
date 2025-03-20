@@ -2,7 +2,7 @@ function DoRating(panel, id, rating, hash) {
 	var RatingReplyPanel = $(panel).parent().parent();
 	$(RatingReplyPanel).html('..');
 
-	$.post("/cloudscript/rate/", {action: rating, scriptid: id, hash: hash}, function(data) {$(RatingReplyPanel).html(data);}, "html");	
+	$.post("/API/rate", {action: rating, scriptid: id, hash: hash}, function(data) {$(RatingReplyPanel).html(data);}, "html");	
 
 	return false;
 }
@@ -26,7 +26,7 @@ function ToggleFavorite(panel, id, hash) {
 		ForceRedraw();
 	}
 
-	$.post("/cloudscript/rate/", {action: 'fave', scriptid: id, hash: hash}, func, "html");
+	$.post("/API/rate", {action: 'fave', scriptid: id, hash: hash}, func, "html");
 
 	return false;
 }
