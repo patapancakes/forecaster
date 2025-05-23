@@ -1,0 +1,14 @@
+{{define "code"}}
+<div style="padding: 40px; padding-left: 0px;">
+	<textarea name="script" id="code">{{printf "%s" .Data}}</textarea>
+</div>
+<script type="text/javascript">
+	var editor = CodeMirror.fromTextArea('code', {
+		height: "dynamic",
+		parserfile: "parselua.js",
+		stylesheet: "/client/codemirror/luacolors.css",
+		path: "/client/codemirror/",
+		lineNumbers: 1,
+		indentUnit: 4
+	});
+</script>{{end}}

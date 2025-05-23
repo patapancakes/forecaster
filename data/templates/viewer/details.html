@@ -1,0 +1,21 @@
+{{define "details"}}<div class='scriptdetail'>
+	<div class='images'><img src='//img.cl0udb0x.com/{{.ID}}_thumb_128.png'></div>
+	<div class='meta'>
+		<div class='entry'>
+			<div class='title'>Author:</div> {{if eq .AuthorName ""}}Unknown{{else}}<a href="/user/!{{.Author}}">{{.AuthorName}}</a>{{end}}</a>
+		</div>
+		<div class='entry'>
+			<div class='title'>Added:</div> {{timeago .Uploaded}}
+		</div>
+		<div class='entry'>
+			<div class='title'>Downloads:</div> {{.Downloads}}
+		</div>
+		<div class='entry'>
+			<div class='title'>Favourited:</div> {{.Favorites}}
+		</div>
+		<div class='entry'>
+			<div class='title'>Updated:</div> {{timeago .Uploaded}}
+		</div>
+	</div>
+	<div class='description'>{{.Description}}</div>
+</div>{{end}}

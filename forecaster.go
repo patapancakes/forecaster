@@ -26,6 +26,7 @@ import (
 	"os"
 
 	"github.com/flatgrassdotnet/forecaster/ingame/browser"
+	"github.com/flatgrassdotnet/forecaster/ingame/viewer"
 )
 
 func main() {
@@ -44,6 +45,11 @@ func main() {
 	http.HandleFunc("GET /", browser.Home)
 	http.HandleFunc("GET /{type}", browser.Browser)
 	http.HandleFunc("GET /search", browser.Search)
+
+	http.HandleFunc("GET /view/{id}", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, fmt.Sprintf("/view/%s/details", r.PathValue("id")), http.StatusSeeOther)
+	})
+	http.HandleFunc("GET /view/{id}/{type}", viewer.Viewer)
 
 	// redundant?
 	//http.HandleFunc("GET /IG/{show}", browser.Browser)

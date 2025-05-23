@@ -1,0 +1,13 @@
+{{define "content"}}<table style='width: 600px; margin: 0 auto; text-align: left; margin-top: 20px; font-size: 11px;'>
+	<thead>
+		<td></td>
+		<td>Compressed</td>
+		<td>Uncompressed</td>
+	</thead>
+	{{range .Content}}<tr>
+		<td>{{.Path}}</td>
+		<td>{{.PSize}} B</td>
+		<td>{{.Size}} B</td>
+	</tr>{{end}}
+</table>
+{{end}}
