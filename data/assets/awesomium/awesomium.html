@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cloudbox</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/assets/awesomium/awesomium.css?20250617" type="text/css">
+	</head>
+	<body>
+		<div class="header"></div>
+		<div class="clouds"></div>
+		<div class="content">
+			<div class="pillbox">
+				<h2>Garry's Mod Update Required</h2>
+			
+				<div id="awesomium_fallback" class="luaerror">
+					<span></span><div>Cloudbox requires CEF (Chromium), which is now part of Garry's Mod for all Windows users. Linux users need to use Gmod's "x86-64" beta branch, or can use the Windows version via Proton. Please ensure your game is up-to-date.</div>
+				</div>
+				
+				<div id="awesomium_linux" class="luaerror" hidden>
+					<span></span><div>Cloudbox requires CEF (Chromium), which is part of Gmod's "x86-64" beta branch for Linux, or any Windows branch via Proton.</div>
+				</div>
+				
+				<div id="awesomium_win" class="luaerror" hidden>
+					<span></span><div>Cloudbox requires CEF (Chromium), which is part of the latest version of Garry's Mod on Windows. Please ensure your game is up-to-date in Steam.</div>
+				</div>
+				
+				<img src="/assets/awesomium/branch.png" id="img_branch"/> <img src="/assets/awesomium/verify.png" id="img_verify"/>
+				
+				<h2>Links</h2>
+				
+				<p>*Visit the <a class="textlink" onclick="cloudbox.OpenLink('workshop')">Workshop Page</a> for support.</p>
+				<p>*Access previously downloaded Cloudbox content with <a class="textlink" onclick="cloudbox.OpenLocalMode()">Offline Mode</a>.</p>
+				<p>*For more Garry's Mod projects, visit <code>flatgrass.net</code> in your browser or <a class="textlink" onclick="cloudbox.OpenLink('flatgrass')">open in the Steam Overlay</a>.</p>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			document.querySelector("#awesomium_fallback").setAttribute("hidden","hidden");
+			
+			var awUA = navigator.userAgent.toLowerCase();
+			var awPlatform = "#awesomium_fallback";
+			
+			if (awUA.indexOf("linux") > -1) { // Linux users still have Awesomium on main branch.
+				awPlatform = "#awesomium_linux";
+				document.querySelector("#img_verify").setAttribute("hidden","hidden");
+			} else if (awUA.indexOf("windows") > -1) { // this should not be possible, unless someone's running a pirated or outdated copy.
+				awPlatform = "#awesomium_win";
+				document.querySelector("#img_branch").setAttribute("hidden","hidden");
+			}
+			
+			document.querySelector(awPlatform).removeAttribute("hidden");
+		</script>
+	</body>
+</html>

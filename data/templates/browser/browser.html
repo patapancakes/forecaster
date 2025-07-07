@@ -1,13 +1,28 @@
 <!doctype html>
-<html {{if .InGame}}class="gm13"{{end}}>
+<html class="{{if .InGame}}gm13{{end}}">
 	<head>
 		<title>Cloudbox</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="theme-color" content="#4096ee">
-		<link rel="stylesheet" href="/assets/cloudbox.css?20250303" type="text/css">
-		<link id="darkmode" rel="stylesheet" href="/assets/cloudbox-dark.css?20250303" type="text/css" {{if not .IsDarkMode}}disabled{{end}}>
-		<script src="/assets/cloudbox.js?20250303" defer></script>
+		<meta property="og:title" content="Cloudbox - Toybox for Garry's Mod 13">
+		<meta name="twitter:title" content="Cloudbox - Toybox for Garry's Mod 13">
+		<meta name="description" content="Toybox is now back up and running for both Garry's Mod 12 and 13. Features over 1000 recovered uploads. Explore classic Toybox entities, weapons, and maps all over again. ">
+		<meta property="og:description" content="Toybox is now back up and running for both Garry's Mod 12 and 13. Features over 1000 recovered uploads. Explore classic Toybox entities, weapons, and maps all over again. ">
+		<meta name="twitter:description" content="Toybox is now back up and running for both Garry's Mod 12 and 13. Features over 1000 recovered uploads. Explore classic Toybox entities, weapons, and maps all over again. ">
+		<meta property="og:url" content="https://cl0udb0x.com/">
+		<meta property="twitter:url" content="https://cl0udb0x.com/">
+		<meta property="twitter:domain" content="cl0udb0x.com">
+		<meta property="og:image" content="https://cl0udb0x.com/assets/preview.png">
+		<meta name="twitter:image" content="https://cl0udb0x.com/assets/preview.png">
+		<meta property="og:type" content="website">
+		<meta name="twitter:card" content="summary_large_image">
+		<meta property="og:site_name" content="Flatgrass.net">
+		<link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180x180.png" />
+		<link rel="stylesheet" href="/assets/cloudbox.css?20250601" type="text/css">
+		<link id="darkmode" rel="stylesheet" href="/assets/cloudbox-dark.css?20250601" type="text/css" {{if not .IsDarkMode}}disabled{{end}}>
+		<script src="/assets/cloudbox.js?20250601" defer></script>
 		<script>
 			var darkMode = {{.IsDarkMode}};
 			function toggleMode() {

@@ -156,6 +156,7 @@ a.textlink .linkicon {background-size: cover; background-position: left; backgro
 a.textlink:hover .linkicon {background-position: right;}
 
 .newsitem:not(:last-child) {border-bottom: 1px solid #B8E3FF;}
+.newsitem time {position: relative;}
 
 
 .thumb {width: 100%; height: 100%; border: 2px solid #595959; border-radius: 4px; background-position: center; background-image: url("/assets/rustmb/missing.svg");}

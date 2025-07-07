@@ -169,3 +169,62 @@ if (document.documentElement.classList.contains("gm13")) {
 if ( (navigator.userAgent.toLowerCase().indexOf("linux") > -1) || (navigator.userAgent.toLowerCase().indexOf("macintosh") > -1) ) {
 	document.documentElement.classList.add("show-searchbtn");
 }
+
+// Enhance news items
+var newslist = document.querySelectorAll(".newsitem");
+var nowMS = (new Date()).getTime();
+for (i=0; i<newslist.length; i++) {
+	var item = newslist[i].querySelector(".newsformat");
+	
+	// Flatgrass link
+	if (document.documentElement.classList.contains("gm13")) { // ingame
+		var flatgrassLinkUnique = "class='textlink tt_top' onclick='cloudbox.OpenLink(\"flatgrass\")' tooltip='Open in Steam Overlay' style='position: relative;'>https://flatgrass.net";
+	} else { // out of game
+		var flatgrassLinkUnique = "class='textlink' href='https://flatgrass.net' target='_blank'>flatgrass.net";
+	}
+	
+	item.innerHTML = item.innerHTML.replace("https://flatgrass.net", "<a " + flatgrassLinkUnique + " <span class='linkicon' style='background-image:url(\"/assets/rustmb/combined/link.png\")'></span></a>");
+	
+	
+	// Time formatting
+	if (typeof Intl === 'object' && typeof Intl.DateTimeFormat === 'function') {
+		var timeEl = newslist[i].querySelector("time[datetime]");
+		
+		if (timeEl != undefined) {
+		
+			var date = new Date(timeEl.getAttribute("datetime"));
+			
+			var offset = (date.getTimezoneOffset()/60)*-1;
+			if (offset >= 0) offset = "+" + offset;
+			var dateFormatted = Intl.DateTimeFormat("en-GB", {year:"numeric", month:"long", day:"2-digit"}).format(date) + ", " + Intl.DateTimeFormat("en-GB", {hour:"numeric", minute:"2-digit", hour12:true}).format(date) + " (UTC "+ offset + ")";
+			
+			var showTT = true;
+			
+			var timeDif = (nowMS - date.getTime()) / 1000 / 60; // in minutes
+			if (timeDif < 2) {
+				timeEl.innerText = "A minute ago";
+			} else if (timeDif < 60) {
+				timeEl.innerText = Math.floor(timeDif) + " minutes ago";
+			} else if (timeDif < 60*2) {
+				timeEl.innerText = "1 hour ago";
+			} else if (timeDif < (60*24)) {
+				timeEl.innerText = Math.floor(timeDif/60) + " hours ago";
+			} else if (timeDif < (60*24*2)) {
+				timeEl.innerText = "Yesterday";
+			} else {
+				timeEl.innerText = dateFormatted;
+				showTT = false;
+			}
+			
+			if (showTT) {
+				if (document.documentElement.classList.contains("gm13")) {
+					timeEl.classList.add("tt_top");
+					timeEl.setAttribute("tooltip", dateFormatted);
+				} else {
+					timeEl.setAttribute("title", dateFormatted);
+				}
+			}
+			
+		}
+	}
+}
