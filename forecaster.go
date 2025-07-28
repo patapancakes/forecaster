@@ -47,6 +47,7 @@ func main() {
 	http.HandleFunc("GET /{pagetype}", home.Handle)
 	http.HandleFunc("GET /browse/{category}", browser.Handle)
 	http.HandleFunc("GET /view/{id}", viewer.Handle)
+	http.HandleFunc("GET /view/{id}/{subpage}", viewer.Handle)
 	http.HandleFunc("GET /svg/{id}", svg.Handle)
 
 	// redirects

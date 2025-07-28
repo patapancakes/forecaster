@@ -1,0 +1,51 @@
+{{define "code"}}
+<script src="/assets/codemirror/codemirror.js"></script>
+<link rel="stylesheet" href="/assets/codemirror/codemirror.css">
+<link rel="stylesheet" href="/assets/codemirror/luacolors.css">
+<script src="/assets/codemirror/lua.js"></script>
+<style>
+.CodeMirror {margin: 0px auto; background-color: white; border: 2px solid #4096ee; width: 92%; box-sizing: border-box; height: auto; scrollbar-color: #4096ee #f7f7f7; font-family: monospace; font-size: 13px;}
+.CodeMirror-lines {border-right: 1px solid #ddd;}
+</style>
+
+<div class="pillbox" style="flex-shrink:0; font-size: 13px;">
+	<p style="margin-top: 0">The Lua code for this item is presented in its original Garry's Mod 12 format, as it existed in 2010-2012. It does not include the fixes made by Cloudbox's compatibility layer for Garry's Mod 13.</p>
+	<p>Copyright for the item code belongs to the original author. Links in the code comments may be outdated and code may not reflect the skills of the author today. Please do not hassle the original author for support with this item.</p>
+	{{if .InGame}}
+		<div>To access this code easier, open in a desktop browser or Steam Overlay. <a class="textlink" onclick='cloudbox.OpenLinkWildcard("https://cl0udb0x.com/view/{{.Item.ID}}/code");'>https://cl0udb0x.com/view/{{.Item.ID}}/code <span class="linkicon" style="background-image:url('/assets/rustmb/combined/link.png')"></span></a></div>
+	{{else}}
+		<button class="form_btn" onclick="copyToClipboard();">Copy Code to Clipboard</button>
+	{{end}}
+</div>
+
+<textarea name="script" id="srccode">{{printf "%s" .Item.Data}}</textarea>
+<script type="text/javascript">
+	var editor = CodeMirror.fromTextArea(document.querySelector("#srccode"), {
+		indentUnit: 4,
+		indentWithTabs: true,
+		lineWrapping: true,
+		lineNumbers: true,
+		readOnly: true
+	});
+	
+	var code = document.querySelector("#srccode");
+	var display = document.querySelector(".CodeMirror");
+	
+	function copyToClipboard() {
+		code.select();
+		if (document.querySelector(".clipboard")) {
+			document.querySelector(".clipboard").remove();
+		}
+		try {
+			navigator.clipboard.writeText(code.value);
+			var clipMsg = document.createElement("div");
+			clipMsg.classList.add("clipboard");
+			clipMsg.innerText = "Copied to clipboard!";
+			clipMsg.style.top = `${display.offsetTop}px`;
+			clipMsg.style.left = `${display.offsetLeft}px`;
+			code.parentNode.insertBefore(clipMsg, code);
+		} catch (error) {}
+	}
+</script>
+
+{{end}}

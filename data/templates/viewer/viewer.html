@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="{{if .InGame}}gm13{{end}}">
+	<head>
+		<title>Cloudbox</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="theme-color" content="#4096ee">
+
+		<link rel="stylesheet" href="/assets/cloudbox.css?20250725" type="text/css">
+		<script src="/assets/cloudbox.js?20250725" defer></script>
+	</head>
+	<body>
+		<div class="header" id="header_primary" style="gap: 10px; min-height: 60px;">
+			<div class="navbar">
+				{{if .InGame}}<a onclick="history.back()" id="back_history" class="tt_right" tooltip="Back to items"><div class="navicon"></div></a>{{end}}
+			</div>
+			<div class="navbar" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; font-weight: bold; font-size: 30px; text-align: right; ">
+				<div>{{.Item.Name}}</div>
+			</div>
+			<div class="navbar" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; font-weight: bold; font-size: 16px; text-align: left;">
+				<div>by {{if eq .Item.AuthorName ""}}<i>Unknown Toybox Author</i>{{else}}{{.Item.AuthorName}}{{end}}</div>
+			</div>
+		</div>
+		<div class="header" id="header_secondary">
+			<div class="subbar"> </div>
+			<div class="subbar">
+				{{if .InGame}}
+					<a id="settings" onclick="cloudbox.OpenSettings()"><span class="navicon"></span><span translate="options">Options</span></a>
+				{{end}}
+			</div>
+		</div>
+		
+		<div class="clouds" id="topclouds"></div>
+		<script>
+			function animationTimeString(time, total) {
+				return "animation-delay: -" + (time.getSeconds() % total) + "." + (time.getMilliseconds()/1000).toFixed(3).substring(2) + "s;";
+			}
+			
+			var animationTime = new Date();
+			document.querySelector("#topclouds").setAttribute("style", animationTimeString(animationTime, 10));
+		</script>
+		
+		<div class="content" style="padding-top:0; padding-bottom: 16px; display: flex; flex-direction: column;">
+			{{if eq .PageType "code"}}{{template "code" .}}{{end}}
+		</div>
+		
+		<dialog id="alert"><h3></h3><p></p><button class="form_btn" onclick="document.querySelector('#alert').close();" autofocus><span translate="dialog.ok">OK</span></button></dialog>
+	</body>
+</html>

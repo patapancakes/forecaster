@@ -1,17 +1,24 @@
 {{define "item"}}
-<div class="item" data-itemid="{{.ID}}"> <!-- class="item isfav" when the item is favourite, when feature is available-->
+<div class="item" data-itemid="{{.ID}}" style="--thumb: url('//img.cl0udb0x.com/{{.ID}}_thumb_128.png');"> <!-- class="item isfav" when the item is favourite, when feature is available-->
 	<a onclick="cloudbox.GetPackage({{.Type}}, {{.ID}}, {{.Revision}})">
 		<div class="thumb">
-			<!--Uncomment when feature is available--><!--<div class="favtoggle tt_topleft" tooltip></div>--><!--Tooltip text handled by CSS due to multi-state-->
-			<div class="thumb_real" style="background-image: url('//img.cl0udb0x.com/{{.ID}}_thumb_128.png');"></div>
+			<div class="favstatus"></div> 
 		</div>
 		<div class="name">
 			{{.Name}}
 		</div>
 	</a>
+	<dialog class="contextmenu">
+		<div class="txt">Item ID #{{.ID}}</div>
+		{{if eq .Type "map"}}
+			<hr>
+			<div class="txt">Source code not viewable for maps</div>
+		{{else}}
+			<a class="ico-code" href="/view/{{.ID}}/code" target="_blank">View Source Code</a>
+		{{end}}
+	</dialog>
 	<div class="metabox-template" hidden>
-		<div class="meta-col thumb">
-			<div class="thumb_real" style="background-image: url('//img.cl0udb0x.com/{{.ID}}_thumb_128.png');"></div>
+		<div class="meta-col thumb" style="--thumb: url('//img.cl0udb0x.com/{{.ID}}_thumb_128.png');">
 		</div>
 		<div class="meta-col meta-info">
 			<div class="meta-row meta-name">{{.Name}}</div>

@@ -36,7 +36,6 @@ import (
 type Browser struct {
 	InGame     bool
 	HomePage   bool
-	IsDarkMode bool
 	Search     string
 	Sort       string
 	Category   string
@@ -60,6 +59,8 @@ var (
 )
 
 func Handle(w http.ResponseWriter, r *http.Request) {
+	var err error
+	
 	category, ok := categories[r.PathValue("category")]
 	if !ok {
 		http.Error(w, "unknown category", http.StatusNotFound)
@@ -69,12 +70,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 	if page < 1 {
 		page = 1
-	}
-
-	var darkmode bool
-	darkCookie, err := r.Cookie("darkmode")
-	if err == nil {
-		darkmode = darkCookie.Value == "true"
 	}
 
 	v := make(url.Values)
@@ -122,14 +117,13 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	ingame := strings.Contains(strings.ToLower(r.UserAgent()), "gmod/") || r.Host == "toybox.garrysmod.com" || r.Host == "ingame.cl0udb0x.com" || r.Host == "safe.cl0udb0x.com"
 
-	/*if ingame && strings.Contains(strings.ToLower(r.UserAgent()), "awesomium") {
+	if ingame && strings.Contains(strings.ToLower(r.UserAgent()), "awesomium") {
 		http.Redirect(w, r, "/assets/awesomium/awesomium.html", http.StatusSeeOther)
 		return
-	}*/
+	}
 
 	err = t.Execute(w, Browser{
 		InGame:     ingame,
-		IsDarkMode: darkmode,
 		Search:     r.URL.Query().Get("search"),
 		Sort:       sort,
 		Category:   category,

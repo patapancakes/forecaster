@@ -26,21 +26,29 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/flatgrassdotnet/forecaster/common"
 	"github.com/flatgrassdotnet/forecaster/utils"
 )
 
-var t = template.Must(template.New("viewer.html").ParseFiles("data/templates/viewer/viewer.html"))
+var t = template.Must(template.New("viewer.html").ParseGlob("data/templates/viewer/*.html"))
 
 type Viewer struct {
-	Package  common.Package
-	Category string
+	InGame     bool
+	Item  common.Package
+	PageType string
 }
 
 func Handle(w http.ResponseWriter, r *http.Request) {
+	var err error
+	
 	v := make(url.Values)
 	v.Set("id", r.PathValue("id"))
+	
+	if r.Host == "safe.cl0udb0x.com" {
+		v.Set("safemode", "true")
+	}
 
 	resp, err := http.Get(fmt.Sprintf("%s/packages/get?%s", os.Getenv("API_URL"), v.Encode()))
 	if err != nil {
@@ -55,9 +63,17 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ingame := strings.Contains(strings.ToLower(r.UserAgent()), "gmod/") || r.Host == "toybox.garrysmod.com" || r.Host == "ingame.cl0udb0x.com" || r.Host == "safe.cl0udb0x.com"
+
+	if ingame && strings.Contains(strings.ToLower(r.UserAgent()), "awesomium") {
+		http.Redirect(w, r, "/assets/awesomium/awesomium.html", http.StatusSeeOther)
+		return
+	}
+
 	err = t.Execute(w, Viewer{
-		Package:  pkg,
-		Category: r.URL.Query().Get("show"),
+		InGame:     ingame,
+		Item:  pkg,
+		PageType: r.PathValue("subpage"),
 	})
 	if err != nil {
 		utils.WriteError(w, r, fmt.Sprintf("failed to execute template: %s", err))

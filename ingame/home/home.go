@@ -37,7 +37,6 @@ type Home struct {
 	InGame       bool
 	HomePage     bool
 	PageType     string
-	IsDarkMode   bool
 	Search       string
 	Sort         string
 	Category     string
@@ -65,16 +64,12 @@ var (
 )
 
 func Handle(w http.ResponseWriter, r *http.Request) {
+	var err error
+
 	pagetype, ok := pagetypes[r.PathValue("pagetype")]
 	if !ok {
 		http.Redirect(w, r, "/error", http.StatusSeeOther)
 		return
-	}
-
-	var darkmode bool
-	darkCookie, err := r.Cookie("darkmode")
-	if err == nil {
-		darkmode = darkCookie.Value == "true"
 	}
 
 	v := make(url.Values)
@@ -148,16 +143,15 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	ingame := strings.Contains(strings.ToLower(r.UserAgent()), "gmod/") || r.Host == "toybox.garrysmod.com" || r.Host == "ingame.cl0udb0x.com" || r.Host == "safe.cl0udb0x.com"
 
-	/*if ingame && strings.Contains(strings.ToLower(r.UserAgent()), "awesomium") {
+	if ingame && strings.Contains(strings.ToLower(r.UserAgent()), "awesomium") {
 		http.Redirect(w, r, "/assets/awesomium/awesomium.html", http.StatusSeeOther)
 		return
-	}*/
+	}
 
 	err = t.Execute(w, Home{
 		InGame:       ingame,
 		HomePage:     true,
 		PageType:     pagetype,
-		IsDarkMode:   darkmode,
 		Search:       r.URL.Query().Get("search"),
 		News:         news,
 		PopularENTs:  ents,

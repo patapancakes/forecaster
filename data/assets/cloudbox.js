@@ -8,47 +8,83 @@ function isScrolling(element) { // adapted from https://www.geeksforgeeks.org/ch
 	return res; 
 }
 
-// Metabox
-var items = document.querySelectorAll(".item");
-var metabox = document.querySelector(".metabox");
-var metaboxTarget = metabox.querySelector(".metabox-target");
-itemHover = function(e) {
-	metabox.classList.add("active");
-	if (metabox.dataset.itemid != this.dataset.itemid) {
-		metabox.dataset.itemid = this.dataset.itemid;
-		metaboxTarget.innerHTML = this.querySelector(".metabox-template").innerHTML;
-		
-		var metaDesc = metaboxTarget.querySelector(".meta-desc");
-		while (isScrolling(metaDesc)) { // Make sure the description fits
-			var scale = Number(metaDesc.dataset.scale);
-			if (scale >= 14) {
-				if (metaDesc.classList.contains("wrap")) {
-					break;
+// Metabox & Context menu
+var items = document.querySelectorAll(".item > a");
+if (items.length > 0) {
+	var metabox = document.querySelector(".metabox");
+	var metaboxTarget = metabox.querySelector(".metabox-target");
+	itemHover = function(e) {
+		metabox.classList.add("active");
+		if (metabox.dataset.itemid != this.parentNode.dataset.itemid) {
+			metabox.dataset.itemid = this.parentNode.dataset.itemid;
+			metaboxTarget.innerHTML = this.parentNode.querySelector(".metabox-template").innerHTML;
+			
+			var metaDesc = metaboxTarget.querySelector(".meta-desc");
+			while (isScrolling(metaDesc)) { // Make sure the description fits
+				var scale = Number(metaDesc.dataset.scale);
+				if (scale >= 14) {
+					if (metaDesc.classList.contains("wrap")) {
+						break;
+					}
+					metaDesc.classList.add("wrap");
+					scale = -1;
 				}
-				metaDesc.classList.add("wrap");
-				scale = -1;
+				scale++;
+				metaDesc.dataset.scale = scale;
 			}
-			scale++;
-			metaDesc.dataset.scale = scale;
+		}
+	};
+	itemLeave = function(e) {
+		metabox.classList.remove("active");
+	};
+	itemMenu = function(e) {
+		e.preventDefault();
+		var prevMenu = document.querySelector(".item dialog.contextmenu[open]");
+		if (prevMenu) {
+			prevMenu.close();
+		}
+		var thisMenu = this.parentNode.querySelector("dialog.contextmenu");
+		thisMenu.show();
+		thisMenu.style.top = `${e.clientY}px`;
+		thisMenu.style.left = `${e.clientX}px`;
+		
+		if (thisMenu.getBoundingClientRect().right > document.body.clientWidth) {
+			thisMenu.style.left = `${e.clientX-thisMenu.getBoundingClientRect().width}px`;
+		}
+		if (thisMenu.getBoundingClientRect().bottom > document.body.clientHeight) {
+			thisMenu.style.top = `${e.clientY-thisMenu.getBoundingClientRect().height}px`;
+		}
+	};
+	for (i=0; i<items.length; i++) {
+		items[i].addEventListener("mouseover", itemHover);
+		items[i].addEventListener("mouseout", itemLeave);
+		items[i].addEventListener("contextmenu", itemMenu);
+		
+		if (document.documentElement.classList.contains("gm13")) {
+			// in-game shouldn't open context menu links in new tab as that's not supported ingame.
+			items[i].parentNode.querySelectorAll("dialog.contextmenu a").forEach( function(lnk) {
+				lnk.removeAttribute("target");
+			});
 		}
 	}
-};
-itemLeave = function(e) {
-	metabox.classList.remove("active");
-};
-for (i=0; i<items.length; i++) {
-	items[i].addEventListener("mouseover", itemHover);
-	items[i].addEventListener("mouseout", itemLeave);
+	// Close any open context menus when anything else is clicked.
+	document.body.addEventListener("click", function(e) {
+		if (!e.target.classList.contains("contextmenu")) {
+			var prevMenu = document.querySelector(".item dialog.contextmenu[open]");
+			if (prevMenu) {
+				prevMenu.close();
+			}
+		}
+	});
 }
 
 
-// Clouds - don't overlap scrollbar
+// Metabox - don't overlap scrollbar
 var content = document.querySelector(".content");
 var bottomclouds = document.querySelector("#bottomclouds");
 function checkScrollbar() {
 	var scrollbarWidth = content.offsetWidth - content.clientWidth;
-	bottomclouds.style.right = scrollbarWidth + "px";
-	metabox.style.right = scrollbarWidth + "px";
+	if (metabox) metabox.style.right = scrollbarWidth + "px";
 }
 window.addEventListener("resize", checkScrollbar);
 checkScrollbar();
@@ -64,50 +100,10 @@ function cbalert(title, txt) {
 	dialog.querySelector("h3").innerText = title;
 	dialog.querySelector("p").innerText = txt;
 	
-	if (document.documentElement.classList.contains("no-dialog")) {
-		cbalertfallbackModal();
-	} else {
-		dialog.showModal();
-	}
+	dialog.showModal();
 }
 
-function cbalertfallbackModal() {
-	var dialog = document.querySelector("#alert");
-	var backdrop = document.querySelector("#backdrop");
-	dialog.setAttribute("open", "open");
-	backdrop.setAttribute("open", "open");
-}
-
-function cbalertClose() {
-	var dialog = document.querySelector("#alert");
-	if (document.documentElement.classList.contains("no-dialog")) {
-		var backdrop = document.querySelector("#backdrop");
-		dialog.removeAttribute("open");
-		backdrop.removeAttribute("open");
-	} else {
-		dialog.close();
-	}
-}
-
-
-if (typeof HTMLDialogElement !== 'function') {
-	// Fallback handling for Awesomium and GM12
-	document.documentElement.classList.add("no-dialog");
-	
-	var backdrop = document.createElement("div");
-	backdrop.setAttribute("id","backdrop");
-	backdrop.addEventListener("click", cbalertClose);
-	document.body.insertBefore(backdrop, document.querySelector("#alert"));
-	
-	document.addEventListener("keydown", function(e){
-		if (event.keyCode == 27) {
-			cbalertClose();
-		}
-	});
-}
-
-
-// Translation - GM13 only
+// Translation - Ingame only
 var tPrefix = "translate_";
 function performTranslation() { // Perform the translation, from cached terms
 	var langStrings = {};
@@ -134,25 +130,14 @@ function checkNeededTranslation() { // Get list of non-cached translation string
 }
 function requestTranslation(terms) { // Request missing terms from game
 	try {
-		if (navigator.userAgent.indexOf("Chrome/18.") > -1) { // Awesomium, thanks garry
-		
-			var results = JSON.parse(cloudbox.GetTranslations(terms.toString()));
+		cloudbox.GetTranslations(terms.toString(), function(res) {
+			var results = JSON.parse(res);
 			// loop over the results, add to sessionStorage
 			for (i=0; i<terms.length; i++) {
 				sessionStorage.setItem(tPrefix+terms[i], results[terms[i]]);
 			}
 			performTranslation(); // Now go ahead with translation
-		
-		} else { // x86-64
-			cloudbox.GetTranslations(terms.toString(), function(res) {
-				var results = JSON.parse(res);
-				// loop over the results, add to sessionStorage
-				for (i=0; i<terms.length; i++) {
-					sessionStorage.setItem(tPrefix+terms[i], results[terms[i]]);
-				}
-				performTranslation(); // Now go ahead with translation
-			});
-		}
+		});
 	} catch(ex) {}
 }
 
@@ -171,60 +156,52 @@ if ( (navigator.userAgent.toLowerCase().indexOf("linux") > -1) || (navigator.use
 }
 
 // Enhance news items
+function DualTypeLink(outgameText, outgameHref, ingameText, ingameOnclick) {
+	var linkicon = `<span class="linkicon" style="background-image:url('/assets/rustmb/combined/link.png')"></span>`;
+	if (document.documentElement.classList.contains("gm13")) { // ingame
+		return `<a class="textlink tt_top" onclick="${ingameOnclick}" tooltip="Open in Steam Overlay" style="position: relative;">${ingameText} ${linkicon}</a>`;
+	} else { // Desktop
+		return `<a class="textlink" href="${outgameHref}" target="_blank">${outgameText} ${linkicon}</a>`;
+	}
+}
 var newslist = document.querySelectorAll(".newsitem");
 var nowMS = (new Date()).getTime();
 for (i=0; i<newslist.length; i++) {
 	var item = newslist[i].querySelector(".newsformat");
 	
-	// Flatgrass link
-	if (document.documentElement.classList.contains("gm13")) { // ingame
-		var flatgrassLinkUnique = "class='textlink tt_top' onclick='cloudbox.OpenLink(\"flatgrass\")' tooltip='Open in Steam Overlay' style='position: relative;'>https://flatgrass.net";
-	} else { // out of game
-		var flatgrassLinkUnique = "class='textlink' href='https://flatgrass.net' target='_blank'>flatgrass.net";
-	}
-	
-	item.innerHTML = item.innerHTML.replace("https://flatgrass.net", "<a " + flatgrassLinkUnique + " <span class='linkicon' style='background-image:url(\"/assets/rustmb/combined/link.png\")'></span></a>");
+	// Flatgrass.net link
+	item.innerHTML = item.innerHTML.replace("https://flatgrass.net", DualTypeLink("flatgrass.net", "https://flatgrass.net", "https://flatgrass.net", "cloudbox.OpenLink('flatgrass')") );
 	
 	
 	// Time formatting
-	if (typeof Intl === 'object' && typeof Intl.DateTimeFormat === 'function') {
-		var timeEl = newslist[i].querySelector("time[datetime]");
-		
-		if (timeEl != undefined) {
-		
-			var date = new Date(timeEl.getAttribute("datetime"));
-			
-			var offset = (date.getTimezoneOffset()/60)*-1;
-			if (offset >= 0) offset = "+" + offset;
-			var dateFormatted = Intl.DateTimeFormat("en-GB", {year:"numeric", month:"long", day:"2-digit"}).format(date) + ", " + Intl.DateTimeFormat("en-GB", {hour:"numeric", minute:"2-digit", hour12:true}).format(date) + " (UTC "+ offset + ")";
-			
-			var showTT = true;
-			
-			var timeDif = (nowMS - date.getTime()) / 1000 / 60; // in minutes
-			if (timeDif < 2) {
-				timeEl.innerText = "A minute ago";
-			} else if (timeDif < 60) {
-				timeEl.innerText = Math.floor(timeDif) + " minutes ago";
-			} else if (timeDif < 60*2) {
-				timeEl.innerText = "1 hour ago";
-			} else if (timeDif < (60*24)) {
-				timeEl.innerText = Math.floor(timeDif/60) + " hours ago";
-			} else if (timeDif < (60*24*2)) {
-				timeEl.innerText = "Yesterday";
-			} else {
-				timeEl.innerText = dateFormatted;
-				showTT = false;
-			}
-			
-			if (showTT) {
-				if (document.documentElement.classList.contains("gm13")) {
-					timeEl.classList.add("tt_top");
-					timeEl.setAttribute("tooltip", dateFormatted);
-				} else {
-					timeEl.setAttribute("title", dateFormatted);
-				}
-			}
-			
-		}
+	var timeEl = newslist[i].querySelector("time[datetime]");
+
+	var date = new Date(timeEl.getAttribute("datetime"));
+	
+	var dfOffset = (date.getTimezoneOffset()/60)*-1;
+	if (dfOffset >= 0) dfOffset = "+" + dfOffset;
+	var dfDay = Intl.DateTimeFormat("en-GB", {year:"numeric", month:"long", day:"2-digit"}).format(date);
+	var dfTime = Intl.DateTimeFormat("en-GB", {hour:"numeric", minute:"2-digit", hour12:true}).format(date);
+	
+	var dateFormatted = `${dfDay}, ${dfTime} (UTC ${dfOffset})`;
+	
+	var timeDif = (nowMS - date.getTime()) / 1000 / 60; // in minutes
+	
+	if (timeDif >= 60*24*2) { // More than 48 hours
+		timeEl.innerText = dateFormatted;
+		continue; // don't need a tooltip
+	} else if (timeDif >= 60*24) { // 1 day ~ 1d 23h 59min
+		timeEl.innerText = "Yesterday";
+	} else if (timeDif >= 60*2) { // 2 hours ~ 23h 59min
+		timeEl.innerText = Math.floor(timeDif/60) + " hours ago";
+	} else if (timeDif >= 60) { // 1 hour ~ 1h 59mins
+		timeEl.innerText = "1 hour ago";
+	} else if (timeDif >= 2) { // 2 mins ~ 59 minutes
+		timeEl.innerText = Math.floor(timeDif) + " minutes ago";
+	} else { // now ~ 1 min 59 seconds
+		timeEl.innerText = "A minute ago";
 	}
+	
+	timeEl.classList.add("tt_bottomright");
+	timeEl.setAttribute("tooltip", dateFormatted);
 }

@@ -2,7 +2,7 @@
 <div class="pillbox">
 	<h2>Localisation</h2>
 	<p>
-		Localisation is supported in GM13 only. GM12 and desktop will simply ignore it.<br/>
+		Localisation is supported in Gmod only. Desktop will simply ignore it.<br/>
 		Any element can have a <code>translate</code> attribute with the target localisation key. The text value of that element will be replaced if a match is found.<br/>
 	</p>
 	<ul>
@@ -10,7 +10,7 @@
 		<li>Example: Spawn <span translate="addons.entity">Entities</span> and <span translate="addons.vehicle">Vehicles</span></li>
 	</ul>
 	<p>
-		If no match can be found for the user's language, the existing text value will be kept. For this reason, all strings should be the same as their default English value.
+		If no match can be found for the user's language (or the user is out-of-game), the existing text value will be kept. For this reason, all strings should be the same as their default English value.
 	</p>
 	<ul>
 		<li>Code: <code>This key doesn't exist so will be kept as &lt;span translate="zimbabwe"&gt;bazinga&lt;/span&gt;</code></li>
@@ -21,7 +21,7 @@
 <div class="pillbox">
 	<h2>Input/form elements</h2>
 	<p>
-		HTML &lt;input&gt; elements can be styled for consistent display between desktop browsers, Gmod 13's multiple renderers, and Gmod 12. Elements adjust for light and dark mode, hover/focus/click, etc.<br/>
+		HTML &lt;input&gt; elements can be styled for consistent display between desktop browsers and Gmod. Elements adjust for light and dark mode, hover/focus/click, etc.<br/>
 		Use class "form_input" for text inputs and "form_btn" for button inputs. Not required to be used inside an actual form.
 	</p>
 	<ul>
@@ -94,13 +94,13 @@
 </div>
 
 <style>
-.scrolldemo_outer {width: 170px; height: 240px; overflow: auto; float: left; margin: 2px 12px; border: 12px solid transparent; box-shadow: 0 0 0 3px rgba(128,128,128,0.5);}
+.scrolldemo_outer {width: 170px; height: 240px; overflow: auto; float: left; margin: 2px 12px; border: 12px solid transparent; box-shadow: 0 0 0 3px #80808080;}
 .scrolldemo_inner {height: 800px;}
 </style>
 <div class="pillbox" style="padding-bottom: 30px;">
 	<h2>Scrollbar</h2>
 	<p>
-		Scrollbar renders differently between modern desktop browsers (via scrollbar-color) and GM12/Awesomium/CEF86 (via a range of ::-webkit-scrollbar selectors). Scrollbar adjusts for light/dark mode.
+		Scrollbar renders differently between modern desktop browsers and CEFCodecFix (via scrollbar-color) and CEF 86 (via a range of ::-webkit-scrollbar selectors). Scrollbar adjusts for light/dark mode.
 	</p>
 	<div id="scrolldemo_outer1" class="scrolldemo_outer"><div class="scrolldemo_inner"></div></div>
 	<div id="scrolldemo_outer2" class="scrolldemo_outer"><div class="scrolldemo_inner"></div></div>	

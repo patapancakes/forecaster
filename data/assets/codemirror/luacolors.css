@@ -1,0 +1,42 @@
+.cm-s-default .CodeMirror-code { /* span.lua-token */
+  color: #151;
+}
+
+.cm-s-default span.cm-variable { /* span.lua-identifier */
+  color: black;
+}
+
+.cm-s-default span.cm-builtin { /* span.lua-stdfunc */
+  font-weight: bold;
+  color: #077;
+}
+
+.cm-s-default span.cm-comment {
+  color: #090;
+}
+
+.cm-s-default span.cm-keyword {
+  font-weight: bold;
+  color: blue;
+}
+
+.cm-s-default span.cm-string {
+  color: #AA2222;
+}
+
+
+.cm-s-default span.cm-number {
+  color: #3A3;
+}
+
+
+
+.cm-s-default span.cm-customfunc { /* span.lua-customfunc, unsure if this maps to anything */
+  font-weight: bold;
+  color: #0AA;
+}
+
+.cm-s-default span.cm-error { /* span.cm-error, unsure if this maps to anything */
+  color: #FFF;
+  background-color: #F00;
+}

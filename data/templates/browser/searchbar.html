@@ -1,5 +1,5 @@
 {{define "searchbar"}}
-<div class="search{{if or (eq .Sort "random") (eq .Sort "")}} search_sortrandom{{end}}" style="-webkit-box-flex: 1; width: 100%;">
+<div class="search">
 	<form {{if .HomePage}}action="/search"{{end}}>
 		<input id="searchbox" class="form_input" type="text" name="search" placeholder="Search {{if eq .Category "entity"}}Entities{{else if eq .Category "weapon"}}Weapons{{else if eq .Category "prop"}}Props{{else if eq .Category "savemap"}}Saves{{else if eq .Category "map"}}Maps{{end}}" value="{{.Search}}"
 		{{if .InGame}}

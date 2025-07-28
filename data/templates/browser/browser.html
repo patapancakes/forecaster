@@ -20,48 +20,20 @@
 		<meta property="og:site_name" content="Flatgrass.net">
 		<link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png" />
 		<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180x180.png" />
-		<link rel="stylesheet" href="/assets/cloudbox.css?20250601" type="text/css">
-		<link id="darkmode" rel="stylesheet" href="/assets/cloudbox-dark.css?20250601" type="text/css" {{if not .IsDarkMode}}disabled{{end}}>
-		<script src="/assets/cloudbox.js?20250601" defer></script>
-		<script>
-			var darkMode = {{.IsDarkMode}};
-			function toggleMode() {
-				darkMode = !darkMode;
-				document.cookie = "darkmode="+darkMode+"; Path=/";
-				if (darkMode) {
-					document.getElementById("darkmode").removeAttribute("disabled");
-				} else {
-					document.getElementById("darkmode").setAttribute("disabled","disabled");
-				}
-				{{if .InGame}}
-					cloudbox.ToggleDarkMode(darkMode);
-				{{end}}
-			}
-
-			{{if .InGame}} 
-				function forceMode(mode) {
-					darkMode = !mode;
-					toggleMode();
-				}
-				
-				cloudbox.ToggleDarkMode(darkMode);
-			{{end}}
-		</script>
+		<link rel="stylesheet" href="/assets/cloudbox.css?20250725" type="text/css">
+		<script src="/assets/cloudbox.js?20250725" defer></script>
 	</head>
 	<body>
 		<div class="header" id="header_primary">
 			{{template "categorybar" .}}
-			<div class="header header_breakout">
-				{{template "searchbar" .}}
-				{{if not .HomePage}}
-					{{template "pagenav" .}}
-				{{end}}
-			</div>
+			{{template "searchbar" .}}
+			{{if not .HomePage}}
+				{{template "pagenav" .}}
+			{{end}}
 		</div>
 		<div class="header" id="header_secondary">
 			{{template "sortbar" .}}
-			<div class="subbar" style="margin-left:auto; margin-right: 52px;">
-				<a id="togglemode" onclick="toggleMode()" class="tt_left" tooltip="Toggle Light/Dark Mode"><span class="navicon"></span></a>
+			<div class="subbar">
 				{{if .InGame}}
 					<a id="settings" onclick="cloudbox.OpenSettings()"><span class="navicon"></span><span translate="options">Options</span></a>
 				{{end}}
@@ -70,12 +42,13 @@
 		
 		<div class="clouds" id="topclouds"></div>
 		<div class="metabox" data-itemid="">
+			<div class="clouds" id="bottomclouds"></div>
 			<div class="metabox-target"></div>
 		</div>
-		<div class="clouds" id="bottomclouds"></div>
+
 		<script>
 			function animationTimeString(time, total) {
-				return "-webkit-animation-delay: -" + (time.getSeconds() % total) + "." + (time.getMilliseconds()/1000).toFixed(3).substring(2) + "s;";
+				return "animation-delay: -" + (time.getSeconds() % total) + "." + (time.getMilliseconds()/1000).toFixed(3).substring(2) + "s;";
 			}
 			
 			var animationTime = new Date();
@@ -84,16 +57,17 @@
 		</script>
 		
 		{{if .HomePage}}
-			<div class="content" style="padding-top:0; {{if ne .PageType "home"}}padding-bottom: 16px;{{end}}">
+			<div class="content" style="padding-top:0; padding-bottom: 16px;">
 				{{if eq .PageType "home"}}
 					{{template "home" .}}
+					{{template "mouseinfo" .}}
 				{{else if eq .PageType "news"}}
 					{{template "news" .}}
 				{{else if eq .PageType "info"}}
 					{{template "info" .}}
 				{{else if eq .PageType "search"}}
 					<div style="text-align: center;">
-						<h2 style="margin-top: 0; margin-bottom: 6px;">View <i>{{.Search}}</i> <span class="case"translate="search.results">results</span></h2>
+						<h2 style="margin-top: 0; margin-bottom: 6px;">View <i>{{.Search}}</i> <span class="case" translate="search.results">results</span></h2>
 						<div class="pillbox" style="display: inline-block; width: auto; font-size: 20px;">
 							{{template "searchlinks" .}}
 						</div>
@@ -110,17 +84,18 @@
 		{{else}}
 			<div class="content" style="text-align:center;">
 				{{if ne .Search ""}}{{template "searchresultsheading" .}}{{end}}
-				<div {{if ne .Search ""}}id="searchresults"{{end}}>{{range .Packages}}
+				<div {{if ne .Search ""}}id="searchresults"{{end}} class="itemflow">{{range .Packages}}
 					{{template "item" .}}
 				{{end}}</div>
 				{{if ne .Search ""}}
-					<div class="pillbox" style="display: inline-block; width: auto; margin-top: 12px; font-size: 14px; background-color: transparent;">
+					<div class="pillbox" style="display: block; width: auto; margin-top: 12px; font-size: 14px; background-color: transparent;">
 						<h4>See search results in other categories</h4>
 						{{template "searchlinks" .}}
 					</div>
 				{{end}}
+				{{template "mouseinfo" .}}
 			</div>
 		{{end}}
-		<dialog id="alert"><h3></h3><p></p><button class="form_btn" onclick="cbalertClose();" autofocus><span translate="dialog.ok">OK</span></button></dialog>
+		<dialog id="alert"><h3></h3><p></p><button class="form_btn" onclick="document.querySelector('#alert').close();" autofocus><span translate="dialog.ok">OK</span></button></dialog>
 	</body>
 </html>
