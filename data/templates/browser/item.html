@@ -2,7 +2,7 @@
 <div class="item" data-itemid="{{.ID}}" style="--thumb: url('//img.cl0udb0x.com/{{.ID}}_thumb_128.png');"> <!-- class="item isfav" when the item is favourite, when feature is available-->
 	<a onclick="cloudbox.GetPackage({{.Type}}, {{.ID}}, {{.Revision}})">
 		<div class="thumb">
-			<div class="favstatus"></div> 
+			<!-- <div class="favstatus"></div> -->
 		</div>
 		<div class="name">
 			{{.Name}}
@@ -10,10 +10,7 @@
 	</a>
 	<dialog class="contextmenu">
 		<div class="txt">Item ID #{{.ID}}</div>
-		{{if eq .Type "map"}}
-			<hr>
-			<div class="txt">Source code not viewable for maps</div>
-		{{else}}
+		{{if not (or (eq .Type "map") (eq .Type "savemap"))}}
 			<a class="ico-code" href="/view/{{.ID}}/code" target="_blank">View Source Code</a>
 		{{end}}
 	</dialog>
@@ -22,6 +19,11 @@
 		</div>
 		<div class="meta-col meta-info">
 			<div class="meta-row meta-name">{{.Name}}</div>
+			{{if eq .Type "savemap"}}
+				<div class="meta-row meta-stats">
+					<div class="color-map"><span class="mapico"></span>{{.Dataname}}</div>
+				</div>
+			{{end}}
 			{{if not (and (eq .Goods 0) (eq .Bads 0) (eq .Downloads 0) (eq .Favorites 0))}}
 				<div class="meta-row meta-stats">
 					<div>

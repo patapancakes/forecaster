@@ -141,7 +141,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		slices.Reverse(news)
 	}
 
-	ingame := strings.Contains(strings.ToLower(r.UserAgent()), "gmod/") || r.Host == "toybox.garrysmod.com" || r.Host == "ingame.cl0udb0x.com" || r.Host == "safe.cl0udb0x.com"
+	ingame := strings.Contains(strings.ToLower(r.UserAgent()), "gmod/")
 
 	if ingame && strings.Contains(strings.ToLower(r.UserAgent()), "awesomium") {
 		http.Redirect(w, r, "/assets/awesomium/awesomium.html", http.StatusSeeOther)

@@ -12,7 +12,7 @@
 	<p style="margin-top: 0">The Lua code for this item is presented in its original Garry's Mod 12 format, as it existed in 2010-2012. It does not include the fixes made by Cloudbox's compatibility layer for Garry's Mod 13.</p>
 	<p>Copyright for the item code belongs to the original author. Links in the code comments may be outdated and code may not reflect the skills of the author today. Please do not hassle the original author for support with this item.</p>
 	{{if .InGame}}
-		<div>To access this code easier, open in a desktop browser or Steam Overlay. <a class="textlink" onclick='cloudbox.OpenLinkWildcard("https://cl0udb0x.com/view/{{.Item.ID}}/code");'>https://cl0udb0x.com/view/{{.Item.ID}}/code <span class="linkicon" style="background-image:url('/assets/rustmb/combined/link.png')"></span></a></div>
+		<div>To access this code easier, open in a desktop browser or Steam Overlay. <a class="textlink" onclick='cloudbox.OpenLink("https://cl0udb0x.com/view/{{.Item.ID}}/code");'>https://cl0udb0x.com/view/{{.Item.ID}}/code <span class="linkicon external"></span></a></div>
 	{{else}}
 		<button class="form_btn" onclick="copyToClipboard();">Copy Code to Clipboard</button>
 	{{end}}

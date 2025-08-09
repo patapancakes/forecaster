@@ -32,7 +32,7 @@ import (
 	"github.com/flatgrassdotnet/forecaster/utils"
 )
 
-var t = template.Must(template.New("viewer.html").ParseGlob("data/templates/viewer/*.html"))
+var t = template.Must(template.New("viewer.html").Funcs(template.FuncMap{"StripHTTPS": func(url string) string { s, _ := strings.CutPrefix(url, "https:"); return s }}).ParseGlob("data/templates/browser/*.html"))
 
 type Viewer struct {
 	InGame     bool
@@ -63,7 +63,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ingame := strings.Contains(strings.ToLower(r.UserAgent()), "gmod/") || r.Host == "toybox.garrysmod.com" || r.Host == "ingame.cl0udb0x.com" || r.Host == "safe.cl0udb0x.com"
+	ingame := strings.Contains(strings.ToLower(r.UserAgent()), "gmod/")
 
 	if ingame && strings.Contains(strings.ToLower(r.UserAgent()), "awesomium") {
 		http.Redirect(w, r, "/assets/awesomium/awesomium.html", http.StatusSeeOther)

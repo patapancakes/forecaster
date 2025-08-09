@@ -1,0 +1,51 @@
+<!doctype html>
+<html class="{{if .InGame}}gm13{{end}}" id="viewer">
+	<head>
+		{{template "head" .}}
+	</head>
+	<body>
+		<div class="header" id="header_primary">
+			{{if .InGame}}
+				<div class="navbar" id="back_history">
+					<a onclick="history.back()" class="tt_right" tooltip="Back to items"><div class="navicon"></div></a>
+				</div>
+			{{end}}
+			<div class="navbar itemname">
+				<div>{{.Item.Name}}</div>
+			</div>
+			{{if not (eq .Item.AuthorName "")}}
+				<div class="navbar authorname">
+					<div>by {{if eq .Item.AuthorName ""}}<i>Unknown Toybox Author</i>{{else}}{{.Item.AuthorName}}{{end}}</div>
+				</div>
+			{{end}}
+		</div>
+		<div class="header" id="header_secondary">
+			<div class="subbar"> </div>
+			<div class="subbar">
+				{{if .InGame}}
+					<a id="settings" onclick="cloudbox.OpenSettings()"><span class="navicon"></span><span translate="options">Options</span></a>
+				{{end}}
+			</div>
+		</div>
+		
+		<div class="clouds" id="topclouds"></div>
+		<script>
+			var animationTime = new Date();
+			document.querySelector("#topclouds").style.animationDelay = animationTimeString(animationTime, 10);
+		</script>
+		
+		<div class="content">
+			{{if eq .PageType "code"}}
+				{{if eq .Item.Type "savemap"}}
+					<div class="pillbox">Lua is not used for saves</div>
+				{{else if eq .Item.Type "map"}}
+					<div class="pillbox">Lua is not used for maps</div>
+				{{else}}
+					{{template "code" .}}
+				{{end}}
+			{{end}}
+		</div>
+		
+		<dialog id="alert"><h3></h3><p></p><button class="form_btn" onclick="document.querySelector('#alert').close();" autofocus><span translate="dialog.ok">OK</span></button></dialog>
+	</body>
+</html>

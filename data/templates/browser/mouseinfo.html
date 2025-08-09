@@ -1,15 +1,27 @@
 {{define "mouseinfo"}}
-<div id="mouseinfo">
+<div class="mouseinfo mouse">
 	{{if .InGame}}
 		<div class="left">
 			<div class="label"><span class="Case" translate="left_mouse_click">Left Mouse Click</span></div>
 			<div class="action"><span class="Case" translate="spawn">Spawn</span></div>
 		</div>
 	{{end}}
-	<img src="/assets/valve/icon_controller_mouse_generic.png">
+	<img src="/assets/valve/shared_mouse.svg">
 	<div class="right">
 		<div class="label"><span class="Case" translate="right_mouse_click">Right Mouse Click</span></div>
 		<div class="action"><span class="Case" translate="options">Options</span></div>
+	</div>
+</div>
+<div class="mouseinfo touch">
+	<div class="left">
+		<div class="label">Tap</div>
+		<div class="action">Info</div>
+	</div>
+	<img src="/assets/valve/shared_touch_tap.svg">
+	<img src="/assets/valve/shared_touch.svg">
+	<div class="right">
+		<div class="label">Long-press</div>
+		<div class="action">Options</div>
 	</div>
 </div>
 {{end}}

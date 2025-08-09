@@ -90,17 +90,26 @@ dialog.contextmenu a.ico-flag {--ico: url('/assets/rustmb/combined/unused/banana
 #header_primary {}
 #header_secondary {justify-content: space-between; padding-bottom: 2px;}
 
+#viewer #header_primary {gap: 10px; min-height: 60px;}
+
 .clouds {height: 40px; width: calc(100% + 318px); pointer-events: none; animation: clouds 0s linear infinite; flex-shrink: 0;}
-#topclouds {background-image: url("/svg/clouds?fill=B8E3FF"); animation-duration: 10s;  background-color: #4096EE;}
-#bottomclouds {background-image: url("/svg/clouds?fill=FFFFFF"); animation-duration: 5s; opacity: 0.9;}
+#topclouds {background-image: url("/svg/clouds?fill=B8E3FF"); animation-duration: 10s; --animation-duration: 10; background-color: #4096EE;}
+#bottomclouds {background-image: url("/svg/clouds?fill=FFFFFF"); animation-duration: 5s; --animation-duration: 5; opacity: 0.9;}
+html.gm13 .clouds {animation-timing-function: steps( calc( 30 * var(--animation-duration) ) );} /* throttle to 30fps ingame, to reduce panel redraws */
 @media (prefers-reduced-motion: reduce) {
 	.clouds {animation: none !important;}
 }
+html.reduced-motion .clouds {animation: none !important;}
 
 .navbar a {width: 64px; height: 50px; float: left; overflow: hidden; font-size: 11px; text-align: center; margin-top: 10px; margin-left: 4px; font-weight: bolder; text-decoration: none; white-space: nowrap; text-overflow: ellipsis;}
 .navbar .navicon {width: 32px; height: 32px; display: inline-block; background-size: cover; background-repeat: no-repeat; background-position: left;}
 .navbar a:hover .navicon, .navbar a.active .navicon {background-position: right;}
 .navbar .disabled {opacity: 0.25; pointer-events: none;}
+
+.navbar.itemname, .navbar.authorname {flex-grow: 1; display: flex; flex-direction: column; justify-content: center; font-weight: bold;}
+.navbar.itemname {font-size: 30px; text-align: right;}
+.navbar.authorname {font-size: 16px; text-align: left;}
+.navbar.itemname:last-child {text-align: center;}
 
 .subbar {margin-left: 12px;}
 .subbar a {float: left; font-size: 16px; margin-right: 12px; margin-top: 4px; margin-bottom: 4px; font-weight: bolder; text-decoration: none; height: 16px;}
@@ -136,13 +145,9 @@ dialog.contextmenu a.ico-flag {--ico: url('/assets/rustmb/combined/unused/banana
 #settings {cursor: pointer;}
 #settings .navicon {background-image: url('/assets/rustmb/combined/gear.png');}
 
-#togglemode {cursor: pointer; position: absolute; margin: 0; border-radius: 100%; width: 48px; height: 48px; right: 4px; }
-#togglemode .navicon {background-image: url("/assets/rustmb/combined/sunmoon.png"); width: 100%; height: 100%;}
-#togglemode:hover .navicon {background-position: right;}
 
-
-#back_history {cursor: pointer; overflow: visible; position: relative;}
-#back_history .navicon {background-image: url('/assets/rustmb/combined/leftarrow.png'); width: 50px; height: 50px;}
+#back_history a {cursor: pointer; overflow: visible; position: relative;}
+#back_history a .navicon {background-image: url('/assets/rustmb/combined/leftarrow.png'); width: 50px; height: 50px;}
 
 
 
@@ -155,11 +160,12 @@ dialog.contextmenu a.ico-flag {--ico: url('/assets/rustmb/combined/unused/banana
 
 
 
-.content {padding: 16px 8px; overflow-y: auto; background-color: #B8E3FF; flex-grow:1; /*padding-bottom: 160px;*/ scrollbar-color: #4096EE white;}
+.content {padding: 16px 8px; padding-top: 0; overflow-y: auto; background-color: #B8E3FF; flex-grow:1; scrollbar-color: #4096EE white;}
+#viewer .content {display: flex; flex-direction: column;}
 
-.pillbox {background: white; border-radius: 10px; padding: 5px 10px; overflow: hidden; margin-left: auto; margin-right: auto; width: 92%; box-sizing: border-box;}
+.pillbox {background: white; border-radius: 10px; padding: 5px 10px; overflow: hidden; margin-left: auto; margin-right: auto; max-width: 92%; box-sizing: border-box; width: 100%;}
 .pillbox:not(:last-child) {margin-bottom: 6px;}
-.pillbox.thin {display: inline-block; margin-left: 4%; width: auto; max-width: 92%;}
+.pillbox.thin {width: fit-content;}
 
 .pillbox h2, .pillbox h3, .pillbox h4 {color: #4096EE; margin: 0; margin-bottom: 6px; margin-top: 3px;}
 .pillbox sub {font-style: italic; margin-left: 10px; color: #333; font-weight: normal; vertical-align: baseline;}
@@ -171,7 +177,9 @@ a.morelink.large {width: 22px; height: 22px;}
 
 
 a.textlink .linkicon {background-size: cover; background-position: left; background-repeat: no-repeat; display: inline-block; width: 1em; height: 1em; vertical-align: text-top; margin-right: 3px;}
+a.textlink .linkicon.external {background-image: url('/assets/rustmb/combined/link.png');}
 a.textlink:hover .linkicon {background-position: right;}
+
 
 .newsitem:not(:last-child) {border-bottom: 1px solid #B8E3FF;}
 .newsitem time {position: relative;}
@@ -180,10 +188,10 @@ a.textlink:hover .linkicon {background-position: right;}
 .thumb {width: 100%; height: 100%; border: 2px solid #595959; border-radius: 4px; background-position: center; background-image: var(--thumb, none), url("/assets/rustmb/missing.svg"); background-size: cover;}
 
 
-.itemflow {display: flex; flex-wrap: wrap; column-gap: 4.45px; justify-content: center;}
-.itemflow.singleline {overflow: hidden; flex-wrap: nowrap; justify-content: flex-start;}
+.itemflow {display: flex; flex-wrap: wrap; column-gap: 4.45px; row-gap: 7px; justify-content: center; margin-top: 16px; margin-bottom: 2px;}
+.itemflow.singleline {overflow: hidden; flex-wrap: nowrap; justify-content: flex-start; margin-top: 0px;}
 
-.item {width: 132px; height: 125px; display: inline-block;}
+.item {width: 132px; xheight: 125px; display: inline-block;}
 .item a {cursor: pointer;}
 .item .thumb {width: 128px; height: 100px; margin-bottom: 1px; position: relative;}
 .item a:hover .thumb {border-color: #4096EE;}
@@ -202,8 +210,9 @@ a.textlink:hover .linkicon {background-position: right;}
 .metabox-target {margin-left: 15px; margin-right: 15px; margin-top: -10px; display: flex; gap: 10px; height: 125px; position: relative; transition: opacity 0.2s 0s linear; opacity: 1;}
 .metabox:not(.active) .metabox-target {opacity: 0; transition-delay: 0.1s;}
 @media (prefers-reduced-motion: reduce) {
-	.metabox {transition-timing-function: steps(2, jump-none) !important;}
+	.metabox, .metabox-target {transition-timing-function: steps(2, jump-none) !important;}
 }
+html.reduced-motion .metabox, html.reduced-motion .metabox-target {transition-timing-function: steps(2, jump-none) !important;}
 
 
 .metabox .meta-col {flex-shrink: 0; overflow: hidden; box-sizing: border-box; font-weight: bolder;}
@@ -220,6 +229,9 @@ a.textlink:hover .linkicon {background-position: right;}
 .color-dislikes {color: #990036;}
 .color-dls {color: #1C20D9;}
 .color-favs {color: #B65600;}
+
+.metabox .meta-info .meta-stats .mapico {background-image: url("/assets/rustmb/combined/map.png"); background-size: cover; background-position: right; display: inline-block; vertical-align: middle; width: 18px; height: 18px; margin-right: 4px;}
+.color-map {color: #1C20D9;}
 
 .metabox .meta-info .meta-user {line-height: 24px;}
 .metabox .meta-info .meta-user img {width: 48px; height: 48px; float: left; margin-right: 8px;}
@@ -244,15 +256,28 @@ a.textlink:hover .linkicon {background-position: right;}
 
 
 
-#mouseinfo {display: flex; font-size: 10px; font-weight: bold; overflow-wrap: break-word; margin-right: 4%; padding-top: 30px; float: right; clear: both;}
-#mouseinfo img {filter: brightness(0.2); width: 120px; height: 120px;}
-#mouseinfo > div {max-width: 120px; z-index: 2;}
-#mouseinfo .left {margin-right: -28px; text-align: right;}
-#mouseinfo .right {margin-left: -28px; text-align: left;}
-#mouseinfo .label {font-style: italic;}
-#mouseinfo .action {margin-top: 5px; font-size: 16px;}
-#mouseinfo .left .action {margin-right: 6px;}
-#mouseinfo .right .action {margin-left: 6px;}
+.mouseinfo {display: flex; font-size: 10px; font-weight: bold; overflow-wrap: break-word; margin: 0px 4%; justify-content: flex-end; align-items: flex-end; min-height: 160px;}
+.mouseinfo img {filter: brightness(0.2); width: 80px; height: 80px;}
+.mouseinfo > div {max-width: 120px; z-index: 2; height: 80px;}
+.mouseinfo .left {margin-right: -12px; text-align: right;}
+.mouseinfo .right {margin-left: -12px; text-align: left;}
+.mouseinfo .label {font-style: italic;}
+.mouseinfo .action {margin-top: 5px; font-size: 16px;}
+.mouseinfo .left .action {margin-right: 6px;}
+.mouseinfo .right .action {margin-left: 6px;}
+
+.mouseinfo.touch {display: none;}
+.mouseinfo.touch img {width: 50px; height: 50px;}
+.mouseinfo.touch img + img {margin-left: -5px;}
+.mouseinfo.touch > div {height: 50px;}
+.mouseinfo.touch .left {margin-right: -3px;}
+.mouseinfo.touch .right {margin-left: -3px;}
+.mouseinfo.touch .action {margin-left: 0; margin-right: 0; margin-top: 2px;}
+
+@media (hover: none) {
+	html:not(.gm13) .mouseinfo.mouse {display: none;}
+	html:not(.gm13) .mouseinfo.touch {display: flex;}
+}
 
 
 .clipboard {position: absolute; background: black; border-radius: 20px; color: white; text-align:center; padding: 5px 9px; font-size: 13px; font-weight: bold; transform: pointer-events: none; animation: fadeout 1s 1s forwards; z-index: 500; margin: 10px;}
@@ -282,7 +307,9 @@ a.textlink:hover .linkicon {background-position: right;}
 	
 	.metabox-target {margin-left: 5px; margin-right: 5px;}
 	
-	.pillbox {width: 99%;}
+	.pillbox {max-width: calc(100% - 12px);}
+	
+	.CodeMirror {width: 99% !important;}
 	
 }
 
@@ -290,7 +317,7 @@ a.textlink:hover .linkicon {background-position: right;}
 	
 	#header_primary {flex-wrap: wrap;}
 	
-	#header_primary > .navbar:first-child {width: 100%;}
+	html:not(#viewer) #header_primary > .navbar:first-child {width: 100%;}
 	
 	.header .search {padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 16px;}
 	.header .search:not(:last-child) {padding-right: 0px;}
@@ -299,14 +326,30 @@ a.textlink:hover .linkicon {background-position: right;}
 	.header .search:not(:last-child) button {right: 3px;}
 	
 	.header .search + .navbar a {margin-top: 4px;}
+	
+	
+	#viewer #header_primary {flex-direction: column; gap: 3px; padding-top: 5px;}
+	#back_history {position: absolute; top: 0; left: -8px;}
+	.navbar.itemname, .navbar.authorname {text-align: center; overflow-wrap: anywhere; overflow: hidden;}
+	html.gm13 .navbar.itemname, html.gm13 .navbar.authorname {margin-left: 60px;}
+	.navbar.itemname > div, .navbar.authorname > div {font-size: 0.75em; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;}
+	
 }
 
 @media (max-width: 499px) {
-	.header .navbar:first-child {zoom: 0.85;}
+	html:not(#viewer) .header .navbar:first-child {zoom: 0.85;}
 	
 	.header .search {padding-bottom: 6px;}
 	
 	.header .search + .navbar {zoom: 0.8;}
 	
-	.header .subbar a:not(#togglemode) {zoom: 0.85;}
+	.header .subbar {zoom: 0.85;}
+}
+
+
+@media (max-height: 599px) {
+	/* just gives the page a tiny bit more height to work with when the height is limited */
+	#topclouds {height: 30px;}
+	.content {padding-bottom: 8px;}
+	.metabox:not(.active) {transform: translateY(160px);}
 }

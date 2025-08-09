@@ -45,15 +45,26 @@ if (items.length > 0) {
 		}
 		var thisMenu = this.parentNode.querySelector("dialog.contextmenu");
 		thisMenu.show();
-		thisMenu.style.top = `${e.clientY}px`;
-		thisMenu.style.left = `${e.clientX}px`;
 		
-		if (thisMenu.getBoundingClientRect().right > document.body.clientWidth) {
-			thisMenu.style.left = `${e.clientX-thisMenu.getBoundingClientRect().width}px`;
+		if (window.matchMedia("(hover: none)").matches) {
+			// touch devices
+			var menuSize = thisMenu.getBoundingClientRect();
+			
+			thisMenu.style.top = (e.clientY - (menuSize.height/3)) + "px";
+			thisMenu.style.left = (e.clientX - (menuSize.width/2)) + "px";
+		} else {
+			// mouse devices
+			thisMenu.style.top = e.clientY + "px";
+			thisMenu.style.left = e.clientX + "px";
 		}
-		if (thisMenu.getBoundingClientRect().bottom > document.body.clientHeight) {
-			thisMenu.style.top = `${e.clientY-thisMenu.getBoundingClientRect().height}px`;
-		}
+		
+		if (thisMenu.getBoundingClientRect().top < 0) thisMenu.style.top = "0px";
+		if (thisMenu.getBoundingClientRect().left < 0) thisMenu.style.left = "0px";
+
+		if (thisMenu.getBoundingClientRect().bottom > document.body.clientHeight) thisMenu.style.top = document.body.clientHeight-thisMenu.getBoundingClientRect().height + "px";
+		if (thisMenu.getBoundingClientRect().right > document.body.clientWidth)	thisMenu.style.left = document.body.clientWidth-thisMenu.getBoundingClientRect().width + "px";
+
+		
 	};
 	for (i=0; i<items.length; i++) {
 		items[i].addEventListener("mouseover", itemHover);
@@ -156,27 +167,15 @@ if ( (navigator.userAgent.toLowerCase().indexOf("linux") > -1) || (navigator.use
 }
 
 // Enhance news items
-function DualTypeLink(outgameText, outgameHref, ingameText, ingameOnclick) {
-	var linkicon = `<span class="linkicon" style="background-image:url('/assets/rustmb/combined/link.png')"></span>`;
+function DualTypeLink(str, match) {
 	if (document.documentElement.classList.contains("gm13")) { // ingame
-		return `<a class="textlink tt_top" onclick="${ingameOnclick}" tooltip="Open in Steam Overlay" style="position: relative;">${ingameText} ${linkicon}</a>`;
+		return `<a class="textlink tt_top" onclick="cloudbox.OpenLink('https://${match}')" tooltip="Open in Steam Overlay" style="position: relative;">https://${match} <span class="linkicon external"></span></a>`;
 	} else { // Desktop
-		return `<a class="textlink" href="${outgameHref}" target="_blank">${outgameText} ${linkicon}</a>`;
+		return `<a class="textlink" href="https://${match}" target="_blank">${match} <span class="linkicon external"></span></a>`;
 	}
 }
-var newslist = document.querySelectorAll(".newsitem");
-var nowMS = (new Date()).getTime();
-for (i=0; i<newslist.length; i++) {
-	var item = newslist[i].querySelector(".newsformat");
-	
-	// Flatgrass.net link
-	item.innerHTML = item.innerHTML.replace("https://flatgrass.net", DualTypeLink("flatgrass.net", "https://flatgrass.net", "https://flatgrass.net", "cloudbox.OpenLink('flatgrass')") );
-	
-	
-	// Time formatting
-	var timeEl = newslist[i].querySelector("time[datetime]");
-
-	var date = new Date(timeEl.getAttribute("datetime"));
+function DateFormatter(datestring) {
+	var date = new Date(datestring);
 	
 	var dfOffset = (date.getTimezoneOffset()/60)*-1;
 	if (dfOffset >= 0) dfOffset = "+" + dfOffset;
@@ -184,24 +183,49 @@ for (i=0; i<newslist.length; i++) {
 	var dfTime = Intl.DateTimeFormat("en-GB", {hour:"numeric", minute:"2-digit", hour12:true}).format(date);
 	
 	var dateFormatted = `${dfDay}, ${dfTime} (UTC ${dfOffset})`;
+	var dateTooltip = dateFormatted;
 	
 	var timeDif = (nowMS - date.getTime()) / 1000 / 60; // in minutes
 	
 	if (timeDif >= 60*24*2) { // More than 48 hours
-		timeEl.innerText = dateFormatted;
-		continue; // don't need a tooltip
+		dateTooltip = "";
 	} else if (timeDif >= 60*24) { // 1 day ~ 1d 23h 59min
-		timeEl.innerText = "Yesterday";
+		dateFormatted = "Yesterday";
 	} else if (timeDif >= 60*2) { // 2 hours ~ 23h 59min
-		timeEl.innerText = Math.floor(timeDif/60) + " hours ago";
+		dateFormatted = Math.floor(timeDif/60) + " hours ago";
 	} else if (timeDif >= 60) { // 1 hour ~ 1h 59mins
-		timeEl.innerText = "1 hour ago";
+		dateFormatted = "1 hour ago";
 	} else if (timeDif >= 2) { // 2 mins ~ 59 minutes
-		timeEl.innerText = Math.floor(timeDif) + " minutes ago";
+		dateFormatted = Math.floor(timeDif) + " minutes ago";
 	} else { // now ~ 1 min 59 seconds
-		timeEl.innerText = "A minute ago";
+		dateFormatted = "A minute ago";
 	}
 	
-	timeEl.classList.add("tt_bottomright");
-	timeEl.setAttribute("tooltip", dateFormatted);
+	return {formatted:dateFormatted, tooltip:dateTooltip};
 }
+var newslist = document.querySelectorAll(".newsitem");
+var nowMS = (new Date()).getTime();
+for (i=0; i<newslist.length; i++) {
+	var item = newslist[i].querySelector(".newsformat");
+	
+	// Flatgrass links
+	item.innerHTML = item.innerHTML.replace(/\[(flatgrass\.net[\w\/\.\#\-]*)\]/gi, DualTypeLink);
+	
+	// Time formatting
+	var timeEl = newslist[i].querySelector("time[datetime]");
+
+	var date = DateFormatter(timeEl.getAttribute("datetime"));
+
+	timeEl.innerText = date.formatted;
+	if (date.tooltip != "") {
+		timeEl.classList.add("tt_bottomright");
+		timeEl.setAttribute("tooltip", date.tooltip);
+	}
+}
+
+// In-game on low-performance devices shouldn't have animations
+function useReducedMotion() {
+	document.documentElement.classList.add("reduced-motion");
+	sessionStorage.setItem("reduced-motion", true);
+}
+if (sessionStorage.getItem("reduced-motion")) useReducedMotion();

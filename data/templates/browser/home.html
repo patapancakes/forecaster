@@ -6,7 +6,7 @@
 </div>
 
 
-<div class="pillbox" style="padding-bottom: 0px;">
+<div class="pillbox">
 	<h4><span translate="popular">Popular</span> <span translate="addons.entity">Entities</span> <a class="morelink" href="/browse/entities?sort=popular"></a></h4>
 	<div class="itemflow singleline">
 		{{range .PopularENTs}}
@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-<div class="pillbox" style="padding-bottom: 0px;">
+<div class="pillbox">
 	<h4><span translate="popular">Popular</span> <span translate="addons.weapon">Weapons</span> <a class="morelink" href="/browse/weapons?sort=popular"></a></h4>
 	<div class="itemflow singleline">
 		{{range .PopularSWEPs}}
@@ -24,8 +24,8 @@
 	</div>
 </div>
 
-<div class="pillbox" style="padding-bottom: 0px;">
-	<span class="tooltip" style="float:right">Note: Clicking a map below will automatically load the map</span>
+<div class="pillbox">
+	{{if .InGame}}<span class="tooltip" style="float:right">Note: Clicking a map below will automatically load the map</span>{{end}}
 	<h4><span translate="popular">Popular</span> <span translate="addons.map">Maps</span> <a class="morelink" href="/browse/maps?sort=popular"></a></h4>
 	<div class="itemflow singleline">
 		{{range .PopularMaps}}

@@ -1,27 +1,7 @@
 <!doctype html>
 <html class="{{if .InGame}}gm13{{end}}">
 	<head>
-		<title>Cloudbox</title>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="theme-color" content="#4096ee">
-		<meta property="og:title" content="Cloudbox - Toybox for Garry's Mod 13">
-		<meta name="twitter:title" content="Cloudbox - Toybox for Garry's Mod 13">
-		<meta name="description" content="Toybox is now back up and running for both Garry's Mod 12 and 13. Features over 1000 recovered uploads. Explore classic Toybox entities, weapons, and maps all over again. ">
-		<meta property="og:description" content="Toybox is now back up and running for both Garry's Mod 12 and 13. Features over 1000 recovered uploads. Explore classic Toybox entities, weapons, and maps all over again. ">
-		<meta name="twitter:description" content="Toybox is now back up and running for both Garry's Mod 12 and 13. Features over 1000 recovered uploads. Explore classic Toybox entities, weapons, and maps all over again. ">
-		<meta property="og:url" content="https://cl0udb0x.com/">
-		<meta property="twitter:url" content="https://cl0udb0x.com/">
-		<meta property="twitter:domain" content="cl0udb0x.com">
-		<meta property="og:image" content="https://cl0udb0x.com/assets/preview.png">
-		<meta name="twitter:image" content="https://cl0udb0x.com/assets/preview.png">
-		<meta property="og:type" content="website">
-		<meta name="twitter:card" content="summary_large_image">
-		<meta property="og:site_name" content="Flatgrass.net">
-		<link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180x180.png" />
-		<link rel="stylesheet" href="/assets/cloudbox.css?20250725" type="text/css">
-		<script src="/assets/cloudbox.js?20250725" defer></script>
+		{{template "head" .}}
 	</head>
 	<body>
 		<div class="header" id="header_primary">
@@ -45,19 +25,14 @@
 			<div class="clouds" id="bottomclouds"></div>
 			<div class="metabox-target"></div>
 		</div>
-
 		<script>
-			function animationTimeString(time, total) {
-				return "animation-delay: -" + (time.getSeconds() % total) + "." + (time.getMilliseconds()/1000).toFixed(3).substring(2) + "s;";
-			}
-			
 			var animationTime = new Date();
-			document.querySelector("#topclouds").setAttribute("style", animationTimeString(animationTime, 10));
-			document.querySelector("#bottomclouds").setAttribute("style", animationTimeString(animationTime, 5));
+			document.querySelector("#topclouds").style.animationDelay = animationTimeString(animationTime, 10);
+			document.querySelector("#bottomclouds").style.animationDelay = animationTimeString(animationTime, 5);
 		</script>
 		
 		{{if .HomePage}}
-			<div class="content" style="padding-top:0; padding-bottom: 16px;">
+			<div class="content">
 				{{if eq .PageType "home"}}
 					{{template "home" .}}
 					{{template "mouseinfo" .}}
@@ -83,6 +58,9 @@
 			</div>
 		{{else}}
 			<div class="content" style="text-align:center;">
+				{{if eq .Category "savemap"}}
+					<div class="pillbox thin">Saves are not available in Garry's Mod 13. They are available in Garry's Mod 12</a>, and new saves can be uploaded directly in-game. <a class="textlink" href="https://flatgrass.net/toybox.html#gm12" target="_blank">How to use Toybox with Garry's Mod 12 <span class="linkicon external"></span></a></div>
+				{{end}}
 				{{if ne .Search ""}}{{template "searchresultsheading" .}}{{end}}
 				<div {{if ne .Search ""}}id="searchresults"{{end}} class="itemflow">{{range .Packages}}
 					{{template "item" .}}

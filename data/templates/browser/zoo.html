@@ -19,6 +19,27 @@
 </div>
 
 <div class="pillbox">
+	<h2>Text case helper</h2>
+	<p>
+		You can adjust the case of text with the helper classes, <code>case</code>, <code>Case</code>, and <code>CASE</code>.
+	</p>
+	<ul>
+		<li><code>case</code> = lowercase everything: eg <code>&lt;span class="case"&gt;woRDS ArE hERe&lt;/span&gt;</code> = <span class="case">woRDS ArE hERe</span></li>
+		<li><code>Case</code> = Capitalise First Letter Of Each Word BUT PRESERVES The REST AS IS: eg <code>&lt;span class="Case"&gt;words arE heRE&lt;/span&gt;</code> = <span class="Case">words arE heRE</span></li>
+		<li><code>CASE</code> = UPPERCASE EVERYTHING: eg <code>&lt;span class="CASE"&gt;words ArE hERe&lt;/span&gt;</code> = <span class="CASE">words ArE hERe</span></li>
+	</ul>
+	<h4>Localisation</h4>
+	<p>
+		This is particularly useful when used with localisation strings (see the section above) as they may not be the case you want<br/>
+		eg if "addons.entity" returns "Entities" but you want "entities"...
+	</p>
+	<ul>
+		<li>Code: <code>these are my favourite &lt;span translate="addons.entity" class="case"&gt;EnTiTiEs&lt;/span&gt;</code></li>
+		<li>Result: these are my favourite <span translate="addons.entity" class="case">EnTiTiEs</span></li>
+	</ul>
+</div>
+
+<div class="pillbox">
 	<h2>Input/form elements</h2>
 	<p>
 		HTML &lt;input&gt; elements can be styled for consistent display between desktop browsers and Gmod. Elements adjust for light and dark mode, hover/focus/click, etc.<br/>
@@ -32,6 +53,8 @@
 
 <div class="pillbox">
 	<h2>Links</h2>
+	
+	<h4>Basic link styling</h4>
 	<p>
 		Simple links can have the <code>textlink</code> class for basic styling. This can also be used on javascript links.
 	</p>
@@ -39,6 +62,8 @@
 		<li>Code: <code>See the &lt;a class="textlink" href="/news"&gt;News&lt;/a&gt; page for updates.</code></li>
 		<li>Example: See the <a class="textlink" href="/news">News</a> page for updates.</li>
 	</ul>
+	
+	<h4>Hover-state icons</h4>
 	<p>
 		Links can also have a 2-state icon similar to the navigation icons. Add a span with a <code>linkicon</code> class with the <code>background-image</code> for the icon. Styling is handled automatically. Hover link for demo.
 	</p>
@@ -100,7 +125,7 @@
 <div class="pillbox" style="padding-bottom: 30px;">
 	<h2>Scrollbar</h2>
 	<p>
-		Scrollbar renders differently between modern desktop browsers and CEFCodecFix (via scrollbar-color) and CEF 86 (via a range of ::-webkit-scrollbar selectors). Scrollbar adjusts for light/dark mode.
+		Scrollbar renders differently between modern desktop browsers and CEFCodecFix (via scrollbar-color) and CEF 86 (via a range of ::-webkit-scrollbar selectors).
 	</p>
 	<div id="scrolldemo_outer1" class="scrolldemo_outer"><div class="scrolldemo_inner"></div></div>
 	<div id="scrolldemo_outer2" class="scrolldemo_outer"><div class="scrolldemo_inner"></div></div>	
