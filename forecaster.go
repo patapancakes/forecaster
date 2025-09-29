@@ -20,8 +20,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 
@@ -32,7 +32,8 @@ import (
 )
 
 func main() {
-	port := flag.Int("port", 80, "web server listen port")
+	proto := flag.String("proto", "tcp", "proto for web server")
+	addr := flag.String("addr", "127.0.0.1:80", "address for web server")
 	flag.Parse()
 
 	if os.Getenv("API_URL") == "" {
@@ -64,8 +65,27 @@ func main() {
 		http.Redirect(w, r, "/browse/maps", http.StatusSeeOther)
 	})
 
-	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
-	if err != nil {
-		log.Fatalf("error while serving: %s", err)
+	// http stuff
+	if *proto == "unix" {
+		err := os.Remove(*addr)
+		if err != nil && !os.IsNotExist(err) {
+			log.Fatalf("failed to delete unix socket: %s", err)
+		}
 	}
+
+	l, err := net.Listen(*proto, *addr)
+	if err != nil {
+		log.Fatalf("failed to create web server listener: %s", err)
+	}
+
+	defer l.Close()
+
+	if *proto == "unix" {
+		err = os.Chmod(*addr, 0777)
+		if err != nil {
+			log.Fatalf("failed to set unix socket permissions: %s", err)
+		}
+	}
+
+	http.Serve(l, nil)
 }
